@@ -544,16 +544,16 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBRVom5cIw-zX1IU_Kd-MF9g_G2UU66jWE",
-    authDomain: "trama-d-oro.firebaseapp.com",
-    projectId: "trama-d-oro",
-    storageBucket: "trama-d-oro.firebasestorage.app",
-    messagingSenderId: "155379558174",
-    appId: "1:155379558174:web:072f3c4c9f37855f754b0f",
-    measurementId: "G-W54WRBF6VC"
+            authDomain: "trama-d-oro.firebaseapp.com",
+            projectId: "trama-d-oro",
+            storageBucket: "trama-d-oro.firebasestorage.app",
+            messagingSenderId: "155379558174",
+            appId: "1:155379558174:web:072f3c4c9f37855f754b0f",
+            measurementId: "G-W54WRBF6VC"
         };
         
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'trama-doro-app';
