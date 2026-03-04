@@ -104,7 +104,7 @@
     <!-- ESTADO GLOBAL DE CARREGAMENTO -->
     <div id="app-loading" class="fixed inset-0 bg-brand-light z-[100] flex flex-col items-center justify-center">
         <i data-lucide="loader-2" class="w-12 h-12 text-brand-gold animate-spin mb-4"></i>
-        <p class="text-stone-400 text-sm tracking-widest uppercase font-bold" id="loading-text">A carregar catálogo...</p>
+        <p class="text-stone-400 text-sm tracking-widest uppercase font-bold" id="loading-text">A carregar dados...</p>
     </div>
 
     <!-- VISTA 1: CATÁLOGO -->
@@ -137,7 +137,7 @@
         </div>
     </main>
 
-    <!-- VISTA 2: ORÇAMENTO EXCLUSIVO (Netlify Forms) -->
+    <!-- VISTA 2: ORÇAMENTO EXCLUSIVO -->
     <main id="quote-view" class="max-w-4xl mx-auto px-6 py-20 hidden">
         <div class="text-center mb-12">
             <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-4">Design Sob Medida</h2>
@@ -227,12 +227,13 @@
             </button>
         </div>
 
-        <div class="flex gap-8 mb-8 border-b border-stone-200">
-            <button onclick="window.switchAdminTab('products')" id="tab-products" class="text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all">Catálogo</button>
-            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all">Calculadora</button>
+        <div class="flex gap-4 md:gap-8 mb-8 border-b border-stone-200 overflow-x-auto no-scrollbar">
+            <button onclick="window.switchAdminTab('products')" id="tab-products" class="text-brand-gold font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all whitespace-nowrap">Catálogo</button>
+            <button onclick="window.switchAdminTab('inventory')" id="tab-inventory" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Estoque</button>
+            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Calculadora</button>
         </div>
 
-        <!-- Tabela de Produtos -->
+        <!-- ABA 1: PRODUTOS -->
         <div id="admin-products-section" class="block">
             <div class="flex justify-end mb-4">
                 <button onclick="window.openProductModal()" class="flex items-center gap-2 bg-brand-gold text-stone-900 px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-900 hover:text-white transition-all shadow-lg">
@@ -249,15 +250,38 @@
                                 <th class="px-6 py-4 font-bold text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-products-list" class="divide-y divide-stone-100">
-                            <!-- Renderizado via JS -->
-                        </tbody>
+                        <tbody id="admin-products-list" class="divide-y divide-stone-100"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Calculadora -->
+        <!-- ABA 2: ESTOQUE (NOVO) -->
+        <div id="admin-inventory-section" class="hidden">
+            <div class="flex justify-end mb-4">
+                <button onclick="window.openInventoryModal()" class="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-all shadow-lg">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Novo Material
+                </button>
+            </div>
+            <div class="bg-white rounded-[2rem] border border-stone-100 overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-stone-50 text-stone-500 uppercase tracking-widest text-[10px]">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">Material</th>
+                                <th class="px-6 py-4 font-bold">Tipo</th>
+                                <th class="px-6 py-4 font-bold">Estoque</th>
+                                <th class="px-6 py-4 font-bold">Custo</th>
+                                <th class="px-6 py-4 font-bold text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-inventory-list" class="divide-y divide-stone-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: CALCULADORA -->
         <div id="admin-calculator-section" class="hidden bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100 text-stone-900">
             <div class="flex items-center gap-3 mb-8">
                 <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
@@ -319,7 +343,7 @@
         </div>
     </main>
 
-    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+    <!-- MODAL PRODUTO -->
     <div id="product-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
         <div class="bg-white rounded-[2rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-stone-100 px-8 py-6 flex items-center justify-between z-10">
@@ -353,27 +377,96 @@
 
                     <div>
                         <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Links das Imagens (Separados por vírgula)</label>
-                        <textarea id="admin-prod-images" required rows="2" placeholder="https://i.imgur.com/foto1.jpg, https://i.imgur.com/foto2.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                        <p class="text-[10px] text-stone-400 mt-1">Gere links de imagem gratuitos no site <strong>postimages.org</strong> e cole aqui separados por vírgula.</p>
+                        <textarea id="admin-prod-images" required rows="2" placeholder="https://i.imgur.com/foto1.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-stone-50 rounded-2xl border border-stone-100">
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tamanhos e Preços</label>
-                            <textarea id="admin-prod-sizes" required rows="4" placeholder="Único|50.00, M|65.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong>. Separe opções com vírgula.</p>
+                            <textarea id="admin-prod-sizes" required rows="3" placeholder="Único|50.00, M|65.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong></p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cores Disponíveis</label>
-                            <textarea id="admin-prod-colors" required rows="4" placeholder="Azul|#1D3557, Ouro|#D4AF37" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong>. Separe opções com vírgula.</p>
+                            <textarea id="admin-prod-colors" required rows="3" placeholder="Azul|#1D3557" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong></p>
                         </div>
+                    </div>
+
+                    <!-- LINHAS VINCULADAS -->
+                    <div class="p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/20">
+                        <label class="block text-[10px] font-bold text-stone-900 uppercase tracking-widest mb-3">Linhas Compatíveis (Estoque)</label>
+                        <div id="admin-prod-lines-container" class="grid grid-cols-2 gap-3 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                            <!-- Gerado por JS baseado no estoque -->
+                        </div>
+                        <p class="text-[10px] text-stone-500 mt-3 italic">Marque as linhas/fios do seu estoque que podem ser utilizados na confecção desta peça.</p>
                     </div>
 
                     <div class="pt-4 flex justify-end gap-4">
                         <button type="button" onclick="window.closeProductModal()" class="px-6 py-3 rounded-xl font-bold text-sm text-stone-500 hover:bg-stone-100 transition-colors">Cancelar</button>
                         <button type="submit" id="admin-save-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
                             <i data-lucide="save" class="w-4 h-4"></i> Guardar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE ESTOQUE -->
+    <div id="inventory-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[2rem] w-full max-w-lg shadow-2xl relative">
+            <div class="border-b border-stone-100 px-8 py-6 flex items-center justify-between">
+                <h3 class="text-2xl font-serif font-bold text-stone-900" id="inv-modal-title">Adicionar Material</h3>
+                <button onclick="window.closeInventoryModal()" class="p-2 hover:bg-stone-100 rounded-full transition-colors"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="p-8">
+                <form id="admin-inventory-form" onsubmit="window.saveInventory(event)" class="space-y-6">
+                    <input type="hidden" id="admin-inv-id">
+                    
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome do Material</label>
+                        <input type="text" id="admin-inv-name" required placeholder="Ex: Fio Náutico 3mm Azul" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tipo</label>
+                            <select id="admin-inv-type" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <option value="Linha">Linha / Fio</option>
+                                <option value="Argola">Argola</option>
+                                <option value="Zíper">Zíper</option>
+                                <option value="Fecho">Fecho / Ímã</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Unidade</label>
+                            <select id="admin-inv-unit" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <option value="Rolos">Rolos</option>
+                                <option value="Metros">Metros</option>
+                                <option value="Unidades">Unidades</option>
+                                <option value="Gramas">Gramas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Qtd em Estoque</label>
+                            <input type="number" id="admin-inv-qty" required min="0" step="0.1" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Custo Unitário (R$)</label>
+                            <input type="number" id="admin-inv-cost" required min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end gap-4 border-t border-stone-100">
+                        <button type="button" onclick="window.closeInventoryModal()" class="px-6 py-3 rounded-xl font-bold text-sm text-stone-500 hover:bg-stone-100 transition-colors">Cancelar</button>
+                        <button type="submit" id="admin-inv-save-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Guardar
                         </button>
                     </div>
                 </form>
@@ -392,21 +485,18 @@
         </div>
     </footer>
 
-    <!-- LÓGICA CORE + FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // =========================================================================
-        // ATENÇÃO: COLOQUE AQUI AS SUAS CHAVES DO FIREBASE PARA O BANCO DE DADOS
-        // =========================================================================
+        // As suas chaves inseridas anteriormente
         const firebaseConfig = {
-            apiKey: "",
-            authDomain: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: ""
+            apiKey: "AIzaSyBRVom5cIw-zX1IU_Kd-MF9g_G2UU66jWE",
+            authDomain: "trama-d-oro.firebaseapp.com",
+            projectId: "trama-d-oro",
+            storageBucket: "trama-d-oro.firebasestorage.app",
+            messagingSenderId: "155379558174",
+            appId: "1:155379558174:web:072f3c4c9f37855f754b0f"
         };
 
         const BRAND = { whatsapp: "5543998579615", currency: "R$", categories: ["Todos", "Vestuário", "Moda Praia", "Acessórios"] };
@@ -414,56 +504,57 @@
         let app, db;
         let isFirebaseActive = false;
         let PRODUCTS = [];
+        let INVENTORY = [];
         let productStates = {};
         let currentCategory = "Todos";
         let currentSearch = "";
         let mobileMenuOpen = false;
         let isAdminAuthed = false;
 
-        const DEFAULT_PRODUCTS = [
-            {
-                id: "1", name: "Bolsa Transversal Pequena", category: "Acessórios",
-                description: "Bolsa transversal com cerca de 30cm, feita em fio náutico de 3mm.",
-                images: ["assets/20260203_192522.jpg", "assets/20260203_192530.jpg"],
-                colors: [{ name: "Azul Náutico", hex: "#1D3557" }], sizes: [{ label: "Único", price: 50.00 }]
-            }
-        ];
+        // Dados base para o sistema não quebrar vazio
+        const DEFAULT_PRODUCTS = [{ id: "1", name: "Bolsa Base", category: "Acessórios", description: "Bolsa de segurança.", images: [], colors: [], sizes: [{ label: "Único", price: 50.00 }], allowedLines: [] }];
 
         function initApp() {
-            if(!firebaseConfig.projectId || firebaseConfig.projectId === "") {
-                console.warn("Firebase não configurado. Adicione suas chaves no código.");
-                PRODUCTS = [...DEFAULT_PRODUCTS];
-                finishLoading();
-                return;
-            }
-
+            if(!firebaseConfig.projectId) return fallBackLoad();
             try {
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 isFirebaseActive = true;
-                listenToProducts();
+                listenToData();
             } catch(e) {
-                document.getElementById('loading-text').innerText = "Erro ao conectar ao banco de dados.";
-                PRODUCTS = [...DEFAULT_PRODUCTS];
-                finishLoading();
+                document.getElementById('loading-text').innerText = "Erro na conexão.";
+                fallBackLoad();
             }
         }
 
-        function listenToProducts() {
-            const colRef = collection(db, 'products');
-            onSnapshot(colRef, (snapshot) => {
-                if (snapshot.empty && PRODUCTS.length === 0) {
-                    DEFAULT_PRODUCTS.forEach(async (p) => await setDoc(doc(colRef, p.id), p));
-                } else {
-                    PRODUCTS = [];
-                    snapshot.forEach(docSnap => PRODUCTS.push({ id: docSnap.id, ...docSnap.data() }));
-                    finishLoading();
-                }
-            }, (error) => {
-                console.error(error);
-                document.getElementById('loading-text').innerText = "Acesso negado ao Banco de Dados.";
-                setTimeout(() => { PRODUCTS = [...DEFAULT_PRODUCTS]; finishLoading(); }, 3000);
-            });
+        let productsLoaded = false;
+        let inventoryLoaded = false;
+
+        function listenToData() {
+            onSnapshot(collection(db, 'products'), (snapshot) => {
+                PRODUCTS = [];
+                snapshot.forEach(docSnap => PRODUCTS.push({ id: docSnap.id, ...docSnap.data() }));
+                if(PRODUCTS.length === 0) PRODUCTS = [...DEFAULT_PRODUCTS]; // Evitar tela branca se banco limpo
+                productsLoaded = true;
+                checkFullLoad();
+            }, (err) => fallBackLoad(err));
+
+            onSnapshot(collection(db, 'inventory'), (snapshot) => {
+                INVENTORY = [];
+                snapshot.forEach(docSnap => INVENTORY.push({ id: docSnap.id, ...docSnap.data() }));
+                inventoryLoaded = true;
+                checkFullLoad();
+            }, (err) => console.error("Erro Inventário", err));
+        }
+
+        function checkFullLoad() {
+            if(productsLoaded && inventoryLoaded) finishLoading();
+        }
+
+        function fallBackLoad(err = null) {
+            if(err) console.error("Firebase Rules Error", err);
+            PRODUCTS = [...DEFAULT_PRODUCTS];
+            finishLoading();
         }
 
         function finishLoading() {
@@ -472,10 +563,9 @@
             document.getElementById('body-content').classList.remove('js-loading');
             document.getElementById('body-content').classList.add('js-loaded');
             
-            // FORÇA A ABERTURA DO CATÁLOGO DE PRODUTOS QUANDO O SITE ACABA DE CARREGAR
             window.switchView('catalog');
             
-            renderCategories(); renderProducts(); renderAdminProducts(); lucide.createIcons();
+            renderCategories(); renderProducts(); renderAdminProducts(); renderAdminInventory(); lucide.createIcons();
         }
 
         window.switchView = (viewName) => {
@@ -529,14 +619,14 @@
 
             filtered.forEach(p => {
                 const state = productStates[p.id];
-                const activeSize = p.sizes[state.sizeIdx] || p.sizes[0];
-                const activeColor = p.colors[state.colorIdx] || p.colors[0];
-                const activeImage = p.images[state.imageIdx] || p.images[0] || '';
+                const activeSize = p.sizes && p.sizes.length ? p.sizes[state.sizeIdx] : null;
+                const activeColor = p.colors && p.colors.length ? p.colors[state.colorIdx] : null;
+                const activeImage = p.images && p.images.length ? p.images[state.imageIdx] : 'https://via.placeholder.com/800';
                 
-                const sizesHTML = p.sizes.map((s, idx) => `<button onclick="window.selectSize('${p.id}', ${idx})" class="py-3 rounded-xl text-xs font-bold transition-all border ${state.sizeIdx === idx ? 'bg-stone-900 text-white shadow-lg' : 'border-stone-100 text-stone-500 hover:border-stone-300'}">${s.label}</button>`).join('');
-                const colorsHTML = p.colors.map((c, idx) => `<button onclick="window.selectColor('${p.id}', ${idx})" class="w-10 h-10 rounded-full border-2 p-0.5 transition-all ${state.colorIdx === idx ? 'border-brand-gold scale-110' : 'border-transparent opacity-50'}" title="${c.name}"><div class="w-full h-full rounded-full shadow-inner border border-black/10" style="background-color: ${c.hex}"></div></button>`).join('');
+                const sizesHTML = (p.sizes || []).map((s, idx) => `<button onclick="window.selectSize('${p.id}', ${idx})" class="py-3 rounded-xl text-xs font-bold transition-all border ${state.sizeIdx === idx ? 'bg-stone-900 text-white shadow-lg' : 'border-stone-100 text-stone-500 hover:border-stone-300'}">${s.label}</button>`).join('');
+                const colorsHTML = (p.colors || []).map((c, idx) => `<button onclick="window.selectColor('${p.id}', ${idx})" class="w-10 h-10 rounded-full border-2 p-0.5 transition-all ${state.colorIdx === idx ? 'border-brand-gold scale-110' : 'border-transparent opacity-50'}" title="${c.name}"><div class="w-full h-full rounded-full shadow-inner border border-black/10" style="background-color: ${c.hex}"></div></button>`).join('');
                 
-                const controls = p.images.length > 1 ? `
+                const controls = (p.images && p.images.length > 1) ? `
                     <button onclick="window.changeImage(event, '${p.id}', -1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-left" class="w-4 h-4 text-stone-900"></i></button>
                     <button onclick="window.changeImage(event, '${p.id}', 1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-right" class="w-4 h-4 text-stone-900"></i></button>
                     <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">${p.images.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full transition-all ${idx === state.imageIdx ? 'bg-white w-3' : 'bg-white/50'}"></div>`).join('')}</div>` : '';
@@ -545,14 +635,14 @@
                     <div class="bg-white rounded-[2.5rem] border border-stone-100 overflow-hidden flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
                         <div class="relative aspect-[4/5] overflow-hidden bg-stone-50">
                             ${controls}
-                            <img src="${activeImage}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=800'">
+                            <img src="${activeImage}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-700" onerror="this.src='https://via.placeholder.com/800'">
                             <div class="absolute top-6 left-6 z-10"><span class="bg-stone-900/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase">${p.category}</span></div>
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <h3 class="text-2xl font-serif font-bold text-stone-900 mb-2">${p.name}</h3>
                             <p class="text-stone-400 text-sm italic mb-8">"${p.description}"</p>
-                            ${p.sizes.length > 0 ? `<div class="mb-6"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="ruler" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Tamanho</span></div><div class="grid grid-cols-3 gap-2">${sizesHTML}</div></div>` : ''}
-                            ${p.colors.length > 0 ? `<div class="mb-8"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="palette" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Cor: ${activeColor ? activeColor.name : ''}</span></div><div class="flex flex-wrap gap-4">${colorsHTML}</div></div>` : ''}
+                            ${p.sizes && p.sizes.length > 0 ? `<div class="mb-6"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="ruler" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Tamanho</span></div><div class="grid grid-cols-3 gap-2">${sizesHTML}</div></div>` : ''}
+                            ${p.colors && p.colors.length > 0 ? `<div class="mb-8"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="palette" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Cor: ${activeColor ? activeColor.name : ''}</span></div><div class="flex flex-wrap gap-4">${colorsHTML}</div></div>` : ''}
                             <div class="mt-auto pt-6 border-t border-stone-50 flex items-center justify-between">
                                 <div><span class="text-[10px] font-bold text-stone-400 uppercase tracking-tighter">Investimento</span><span class="text-2xl font-serif font-black text-stone-900 block mt-1">${BRAND.currency} ${activeSize ? formatPrice(activeSize.price) : '0,00'}</span></div>
                                 <button onclick="window.sendOrder('${p.id}')" class="bg-brand-gold hover:bg-stone-900 text-white p-4 rounded-2xl transition-all shadow-lg active:scale-95"><i data-lucide="message-circle" class="w-5 h-5"></i></button>
@@ -568,41 +658,49 @@
             const size = p.sizes[state.sizeIdx] || p.sizes[0]; const color = p.colors[state.colorIdx] || p.colors[0];
             let text = `*TRAMA D'ORO - PEDIDO*\n\nOlá! Gostaria de encomendar:\n*Peça:* ${p.name}\n`;
             if(size) text += `*Tamanho:* ${size.label}\n*Valor:* ${BRAND.currency} ${formatPrice(size.price)}\n`;
-            if(color) text += `*Cor:* ${color.name}`;
+            if(color) text += `*Cor:* ${color.name}\n`;
+            
+            // Adicionar linhas sugeridas se houver
+            if(p.allowedLines && p.allowedLines.length > 0) {
+                const linhasSugeridas = INVENTORY.filter(inv => p.allowedLines.includes(inv.id)).map(l => l.name).join(', ');
+                if(linhasSugeridas) text += `\n_Vi que esta peça pode ser feita em: ${linhasSugeridas}_`;
+            }
+            
             window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
         };
 
+        // ADMIN
         window.verifyAdmin = () => {
             if(document.getElementById('admin-pin').value === 'trama2026') { 
                 isAdminAuthed = true; document.getElementById('admin-pin').value = ''; window.switchView('admin-dashboard'); 
-                renderAdminProducts();
+                renderAdminProducts(); renderAdminInventory();
             } else alert("Palavra-passe incorreta.");
         };
 
         window.switchAdminTab = (tab) => {
-            const tabProd = document.getElementById('tab-products'); const tabCalc = document.getElementById('tab-calculator');
-            const secProd = document.getElementById('admin-products-section'); const secCalc = document.getElementById('admin-calculator-section');
-            if (tab === 'products') {
-                tabProd.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
-                tabCalc.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
-                secProd.classList.remove('hidden'); secCalc.classList.add('hidden');
-            } else {
-                tabCalc.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
-                tabProd.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
-                secCalc.classList.remove('hidden'); secProd.classList.add('hidden');
-            }
+            const tabs = ['products', 'inventory', 'calculator'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).className = t === tab 
+                    ? "text-brand-gold font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all whitespace-nowrap"
+                    : "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap";
+                
+                const sec = document.getElementById(`admin-${t}-section`);
+                if(t === tab) sec.classList.remove('hidden'); else sec.classList.add('hidden');
+            });
         };
 
+        // ====== CRUD PRODUTOS ======
         function renderAdminProducts() {
             const tbody = document.getElementById('admin-products-list'); tbody.innerHTML = '';
             if(PRODUCTS.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-400 italic">Catálogo vazio.</td></tr>`; return; }
             PRODUCTS.forEach(p => {
-                const img = p.images[0] || 'https://via.placeholder.com/150'; const price = p.sizes[0] ? formatPrice(p.sizes[0].price) : '0,00';
+                const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
+                const price = (p.sizes && p.sizes.length > 0) ? formatPrice(p.sizes[0].price) : '0,00';
                 tbody.innerHTML += `
                     <tr class="hover:bg-stone-50 transition-colors">
                         <td class="px-6 py-4"><img src="${img}" class="w-12 h-12 rounded-lg object-cover bg-stone-200"></td>
                         <td class="px-6 py-4"><p class="font-bold text-stone-900">${p.name}</p><p class="text-[10px] uppercase tracking-widest text-stone-400">${p.category}</p></td>
-                        <td class="px-6 py-4 font-serif text-lg text-right">
+                        <td class="px-6 py-4 text-right">
                             <button onclick="window.openProductModal('${p.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
                             <button onclick="window.deleteProduct('${p.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </td>
@@ -615,14 +713,39 @@
             document.getElementById('admin-product-form').reset();
             document.getElementById('admin-prod-id').value = '';
             const title = document.getElementById('modal-title');
+            
+            // Gerar Checkboxes de Linhas do Estoque
+            const linesContainer = document.getElementById('admin-prod-lines-container');
+            linesContainer.innerHTML = '';
+            const linhas = INVENTORY.filter(item => item.type === 'Linha');
+            
+            if(linhas.length === 0) {
+                linesContainer.innerHTML = `<p class="text-xs text-stone-400 italic col-span-2">Nenhuma linha cadastrada no estoque.</p>`;
+            } else {
+                linhas.forEach(linha => {
+                    linesContainer.innerHTML += `
+                        <label class="flex items-center gap-2 text-xs text-stone-700 cursor-pointer">
+                            <input type="checkbox" value="${linha.id}" class="linha-checkbox form-checkbox h-4 w-4 text-brand-gold rounded border-stone-300">
+                            <span class="truncate">${linha.name}</span>
+                        </label>
+                    `;
+                });
+            }
+
             if (id) {
                 title.innerText = "Editar Peça"; const p = PRODUCTS.find(x => x.id === id);
                 if(p) {
                     document.getElementById('admin-prod-id').value = p.id; document.getElementById('admin-prod-name').value = p.name;
                     document.getElementById('admin-prod-category').value = p.category; document.getElementById('admin-prod-desc').value = p.description;
-                    document.getElementById('admin-prod-images').value = p.images.join(', ');
-                    document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
-                    document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
+                    if(p.images) document.getElementById('admin-prod-images').value = p.images.join(', ');
+                    if(p.sizes) document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
+                    if(p.colors) document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
+                    
+                    // Marcar checkboxes salvos
+                    if(p.allowedLines) {
+                        const checkboxes = document.querySelectorAll('.linha-checkbox');
+                        checkboxes.forEach(cb => { if(p.allowedLines.includes(cb.value)) cb.checked = true; });
+                    }
                 }
             } else { title.innerText = "Nova Peça"; }
             document.getElementById('product-modal').classList.remove('hidden');
@@ -632,8 +755,7 @@
 
         window.saveProduct = async (e) => {
             e.preventDefault();
-            if (!isFirebaseActive) { alert("Configure as chaves do Firebase no código-fonte (linha 476) para salvar seus dados na nuvem."); return; }
-
+            if (!isFirebaseActive) { alert("Sem acesso ao banco de dados."); return; }
             const btn = document.getElementById('admin-save-btn');
             btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; btn.disabled = true; lucide.createIcons();
 
@@ -642,25 +764,92 @@
                 const sizes = document.getElementById('admin-prod-sizes').value.split(',').map(s => { const [l, p] = s.split('|'); return (l && p) ? { label: l.trim(), price: parseFloat(p.trim()) } : null; }).filter(Boolean);
                 const colors = document.getElementById('admin-prod-colors').value.split(',').map(c => { const [n, h] = c.split('|'); return (n && h) ? { name: n.trim(), hex: h.trim() } : null; }).filter(Boolean);
                 const images = document.getElementById('admin-prod-images').value.split(',').map(i => i.trim()).filter(Boolean);
+                
+                // Pegar linhas selecionadas
+                const allowedLines = Array.from(document.querySelectorAll('.linha-checkbox:checked')).map(cb => cb.value);
 
                 const productData = {
                     id: id, name: document.getElementById('admin-prod-name').value.trim(), category: document.getElementById('admin-prod-category').value,
-                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors
+                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors, allowedLines: allowedLines
                 };
 
-                const colRef = collection(db, 'products');
-                await setDoc(doc(colRef, id), productData);
+                await setDoc(doc(collection(db, 'products'), id), productData);
                 window.closeProductModal();
-            } catch(error) { console.error(error); alert("Erro ao guardar. Verifique o formato (Nome|Valor)."); } 
+            } catch(error) { console.error(error); alert("Erro ao guardar. Verifique o formato."); } 
             finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar Produto`; btn.disabled = false; lucide.createIcons(); }
         };
 
         window.deleteProduct = async (id) => {
-            if(confirm("Deseja eliminar esta peça? Ação irreversível.")) {
-                if (isFirebaseActive) {
-                    const colRef = collection(db, 'products');
-                    await deleteDoc(doc(colRef, id));
-                } else alert("Configure o Firebase para deletar dados.");
+            if(confirm("Deseja eliminar esta peça?")) {
+                if (isFirebaseActive) await deleteDoc(doc(collection(db, 'products'), id));
+            }
+        };
+
+        // ====== CRUD ESTOQUE ======
+        function renderAdminInventory() {
+            const tbody = document.getElementById('admin-inventory-list'); tbody.innerHTML = '';
+            if(INVENTORY.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-stone-400 italic">Estoque vazio.</td></tr>`; return; }
+            INVENTORY.forEach(i => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-stone-900">${i.name}</td>
+                        <td class="px-6 py-4 text-xs text-stone-500">${i.type}</td>
+                        <td class="px-6 py-4 font-serif text-lg">${i.quantity} <span class="text-xs text-stone-400">${i.unit}</span></td>
+                        <td class="px-6 py-4 text-sm">${BRAND.currency} ${formatPrice(i.cost)}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="window.openInventoryModal('${i.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="window.deleteInventory('${i.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        window.openInventoryModal = (id = null) => {
+            document.getElementById('admin-inventory-form').reset();
+            document.getElementById('admin-inv-id').value = '';
+            if (id) {
+                document.getElementById('inv-modal-title').innerText = "Editar Material";
+                const i = INVENTORY.find(x => x.id === id);
+                if(i) {
+                    document.getElementById('admin-inv-id').value = i.id;
+                    document.getElementById('admin-inv-name').value = i.name;
+                    document.getElementById('admin-inv-type').value = i.type;
+                    document.getElementById('admin-inv-unit').value = i.unit;
+                    document.getElementById('admin-inv-qty').value = i.quantity;
+                    document.getElementById('admin-inv-cost').value = i.cost;
+                }
+            } else { document.getElementById('inv-modal-title').innerText = "Novo Material"; }
+            document.getElementById('inventory-modal').classList.remove('hidden');
+        };
+
+        window.closeInventoryModal = () => document.getElementById('inventory-modal').classList.add('hidden');
+
+        window.saveInventory = async (e) => {
+            e.preventDefault();
+            if (!isFirebaseActive) { alert("Sem acesso ao banco."); return; }
+            const btn = document.getElementById('admin-inv-save-btn');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...`; btn.disabled = true; lucide.createIcons();
+
+            try {
+                const id = document.getElementById('admin-inv-id').value || Date.now().toString();
+                const invData = {
+                    id: id,
+                    name: document.getElementById('admin-inv-name').value.trim(),
+                    type: document.getElementById('admin-inv-type').value,
+                    unit: document.getElementById('admin-inv-unit').value,
+                    quantity: parseFloat(document.getElementById('admin-inv-qty').value),
+                    cost: parseFloat(document.getElementById('admin-inv-cost').value)
+                };
+                await setDoc(doc(collection(db, 'inventory'), id), invData);
+                window.closeInventoryModal();
+            } catch(error) { console.error(error); alert("Erro ao guardar estoque."); } 
+            finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar`; btn.disabled = false; lucide.createIcons(); }
+        };
+
+        window.deleteInventory = async (id) => {
+            if(confirm("Deseja eliminar este item do estoque?")) {
+                if (isFirebaseActive) await deleteDoc(doc(collection(db, 'inventory'), id));
             }
         };
 
