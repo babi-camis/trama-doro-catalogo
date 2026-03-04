@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>Trama d'Oro</title>
+    <link rel="icon" type="image/png" href="assets/Vector 1.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            light: '#FDFCF9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fontes -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Carattere&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFCF9;
+        }
+        
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-carattere {
+            font-family: 'Carattere', cursive;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .js-loading { opacity: 0; pointer-events: none; }
+        .js-loaded { opacity: 1; pointer-events: auto; transition: opacity 0.5s ease; }
+    </style>
+
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="text-stone-900 selection:bg-amber-100 selection:text-amber-900 js-loading" id="body-content">
+
+    <!-- Cabeçalho Principal -->
+    <header id="main-header" class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-stone-100">
+        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.switchView('catalog')">
+                <img src="assets/Vector 1.png" alt="Logo" class="h-12 w-auto object-contain drop-shadow-sm" onerror="this.style.display='none'">
+                <h1 class="text-3xl text-stone-900 pt-2 font-carattere hidden sm:block">Trama d'Oro</h1>
+            </div>
+
+            <!-- Menu Desktop -->
+            <div class="hidden lg:flex items-center gap-8" id="desktop-categories"></div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:flex items-center bg-stone-50 px-4 py-2 rounded-xl">
+                    <i data-lucide="search" class="w-4 h-4 text-stone-300 mr-2"></i>
+                    <input type="text" id="search-input" placeholder="Pesquisar..." class="bg-transparent text-xs outline-none w-32" oninput="window.handleSearch(event)">
+                </div>
+                <button onclick="window.switchView('quote')" class="hidden md:flex items-center gap-2 bg-stone-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-brand-gold transition-all">
+                    Orçamento Exclusivo
+                </button>
+                <button class="lg:hidden p-2 text-stone-900" onclick="window.toggleMobileMenu()">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-stone-900 text-white flex-col items-center justify-center gap-8 transition-opacity duration-300">
+        <button class="absolute top-10 right-10" onclick="window.toggleMobileMenu()">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <img src="assets/Vector 1.png" alt="Logo" class="h-20 w-auto mb-2 drop-shadow-md" onerror="this.style.display='none'">
+        <h2 class="text-5xl text-brand-gold mb-6 font-carattere">Trama d'Oro</h2>
+        <div id="mobile-categories" class="flex flex-col items-center gap-6 mb-4"></div>
+        <button onclick="window.switchView('quote'); window.toggleMobileMenu();" class="mt-4 bg-brand-gold text-stone-900 px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm">
+            Pedir Orçamento Exclusivo
+        </button>
+    </div>
+
+    <!-- ESTADO GLOBAL DE CARREGAMENTO (FIREBASE) -->
+    <div id="app-loading" class="fixed inset-0 bg-brand-light z-[100] flex flex-col items-center justify-center">
+        <i data-lucide="loader-2" class="w-12 h-12 text-brand-gold animate-spin mb-4"></i>
+        <p class="text-stone-400 text-sm tracking-widest uppercase font-bold">A sincronizar catálogo...</p>
+    </div>
+
+    <!-- VISTA 1: CATÁLOGO -->
+    <main id="catalog-view" class="max-w-7xl mx-auto px-6 py-12 hidden">
+        <div class="relative h-[45vh] bg-stone-900 rounded-[3rem] overflow-hidden flex items-center justify-center text-center px-6 mb-20 shadow-2xl">
+            <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1590736704728-f4730bb3c370?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center"></div>
+            <div class="relative z-10">
+                <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-4">Essência em Crochê</h2>
+                <p class="text-4xl md:text-6xl font-serif text-white italic mb-8">O luxo do feito à mão.</p>
+                <div class="h-0.5 w-20 bg-brand-gold mx-auto"></div>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <div>
+                <h3 class="text-3xl font-serif font-bold mb-2">Coleção Contemporânea</h3>
+                <p class="text-stone-400 text-sm italic" id="active-category-text">Exibindo: Todos</p>
+            </div>
+            <div class="flex items-center gap-2 bg-stone-100 px-4 py-2 rounded-full text-[10px] font-bold text-stone-500 uppercase tracking-widest">
+                <i data-lucide="info" class="w-3 h-3"></i>
+                Preços variam conforme o tamanho
+            </div>
+        </div>
+
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"></div>
+
+        <div id="empty-state" class="hidden text-center py-32 border-2 border-dashed border-stone-100 rounded-[3rem]">
+            <i data-lucide="shopping-bag" class="w-12 h-12 text-stone-200 mx-auto mb-4"></i>
+            <p class="text-stone-400 font-serif italic">Nenhuma peça encontrada nesta categoria.</p>
+        </div>
+    </main>
+
+    <!-- VISTA 2: ORÇAMENTO EXCLUSIVO -->
+    <main id="quote-view" class="max-w-4xl mx-auto px-6 py-20 hidden">
+        <div class="text-center mb-12">
+            <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-4">Design Sob Medida</h2>
+            <h1 class="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Crie a Sua Trama Exclusiva</h1>
+            <p class="text-stone-500 max-w-2xl mx-auto leading-relaxed">
+                Tem uma ideia única em mente ou precisa de uma peça num tamanho/cor que não está no catálogo? 
+                Preencha os detalhes abaixo.
+            </p>
+        </div>
+
+        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl shadow-stone-200/50 border border-stone-100 relative overflow-hidden">
+            <div id="quote-success" class="hidden absolute inset-0 bg-white z-20 flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+                <div class="w-20 h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mb-6">
+                    <i data-lucide="check" class="w-10 h-10 text-brand-gold"></i>
+                </div>
+                <h3 class="text-4xl font-serif text-stone-900 mb-4 font-bold">Trama Recebida!</h3>
+                <p class="text-stone-500 max-w-md mx-auto mb-10 leading-relaxed">A sua solicitação foi enviada com sucesso.</p>
+                <button onclick="window.resetQuoteForm()" class="bg-stone-900 text-white px-8 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-brand-gold transition-all">Voltar ao Catálogo</button>
+            </div>
+
+            <form id="custom-quote-form" name="orcamento_exclusivo" data-netlify="true" netlify-honeypot="bot-field" onsubmit="window.submitCustomQuote(event)" class="space-y-8 relative z-10">
+                <input type="hidden" name="form-name" value="orcamento_exclusivo">
+                <p class="hidden"><label>Não preencha isto se for humano: <input name="bot-field"></label></p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome Completo</label>
+                        <input type="text" name="nome" required placeholder="Ex: Maria Silva" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Telefone / WhatsApp (Com DDD)</label>
+                        <input type="tel" name="whatsapp" required minlength="11" maxlength="11" pattern="[0-9]{11}" placeholder="Ex: 43998579615" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11)" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Medidas Desejadas</label>
+                    <input type="text" name="medidas" placeholder="Ex: 1,20m x 2,00m..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Descrição Detalhada</label>
+                    <textarea name="descricao" required rows="4" placeholder="Descreva a peça..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all resize-none"></textarea>
+                </div>
+
+                <label class="block bg-stone-50 border-2 border-dashed border-stone-200 rounded-2xl p-6 text-center cursor-pointer hover:border-brand-gold/50 hover:bg-stone-100 transition-all group">
+                    <i data-lucide="image-plus" class="w-8 h-8 text-stone-300 mx-auto mb-3 group-hover:text-brand-gold transition-colors"></i>
+                    <span class="block text-sm font-bold text-stone-700 mb-1 group-hover:text-brand-gold transition-colors">Anexar Foto de Referência</span>
+                    <input type="file" id="quote-file" name="anexo" accept="image/*" class="hidden" onchange="window.updateFileName(this)">
+                    <p id="file-name-display" class="text-xs text-stone-400 mt-2">Nenhum ficheiro selecionado (Opcional)</p>
+                </label>
+
+                <div class="pt-4 border-t border-stone-100 flex justify-end">
+                    <button id="submit-btn" type="submit" class="w-full md:w-auto flex items-center justify-center gap-3 bg-stone-900 hover:bg-brand-gold text-white px-8 py-4 rounded-xl font-bold transition-all shadow-xl">
+                        <span>Solicitar Orçamento</span><i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- VISTA 3: LOGIN ADMIN -->
+    <main id="admin-login-view" class="max-w-md mx-auto px-6 py-32 hidden">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-stone-100 text-center">
+            <div class="w-16 h-16 bg-stone-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="lock" class="w-8 h-8 text-brand-gold"></i>
+            </div>
+            <h2 class="text-2xl font-serif font-bold text-stone-900 mb-2">Painel Administrativo</h2>
+            <p class="text-stone-500 text-sm mb-8">Introduza a palavra-passe para aceder à gestão do catálogo.</p>
+            
+            <input type="password" id="admin-pin" placeholder="Palavra-passe" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-4 text-center text-lg tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all mb-6">
+            
+            <button onclick="window.verifyAdmin()" class="w-full bg-stone-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-brand-gold transition-all">Entrar no Painel</button>
+            <button onclick="window.switchView('catalog')" class="w-full mt-4 text-stone-400 text-xs font-bold uppercase hover:text-stone-900 transition-colors">Voltar ao site</button>
+        </div>
+    </main>
+
+    <!-- VISTA 4: PAINEL ADMIN -->
+    <main id="admin-dashboard-view" class="max-w-7xl mx-auto px-6 py-12 hidden">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 bg-stone-900 text-white p-8 rounded-[2rem]">
+            <div>
+                <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-2">Área Reservada</h2>
+                <h1 class="text-3xl font-serif">Painel Administrativo</h1>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="window.switchView('catalog')" class="flex items-center gap-2 bg-stone-800 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-700 transition-all">
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <!-- Abas de Navegação -->
+        <div class="flex gap-8 mb-8 border-b border-stone-200">
+            <button onclick="window.switchAdminTab('products')" id="tab-products" class="text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all">Catálogo</button>
+            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all">Calculadora de Precificação</button>
+        </div>
+
+        <!-- Seção: Gestão de Produtos -->
+        <div id="admin-products-section" class="block">
+            <div class="flex justify-end mb-4">
+                <button onclick="window.openProductModal()" class="flex items-center gap-2 bg-brand-gold text-stone-900 px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-900 hover:text-white transition-all shadow-lg">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Novo Produto
+                </button>
+            </div>
+            <div class="bg-white rounded-[2rem] border border-stone-100 overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-stone-50 text-stone-500 uppercase tracking-widest text-[10px]">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">Imagem</th>
+                                <th class="px-6 py-4 font-bold">Nome & Categoria</th>
+                                <th class="px-6 py-4 font-bold">Preço Base</th>
+                                <th class="px-6 py-4 font-bold text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-list" class="divide-y divide-stone-100">
+                            <!-- Renderizado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção: Calculadora -->
+        <div id="admin-calculator-section" class="hidden bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100 text-stone-900">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
+                    <i data-lucide="calculator" class="w-5 h-5 text-brand-gold"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-serif font-bold">Calculadora Inteligente</h3>
+                    <p class="text-stone-500 text-sm">Calcule o preço exato para os seus orçamentos exclusivos.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Inputs -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Custo de Materiais (R$)</label>
+                        <input type="number" id="calc-material" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
+                        <p class="text-[10px] text-stone-400 mt-1">Fios, ferragens, forro, etc.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Horas (h)</label>
+                            <input type="number" id="calc-hours" value="0" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor da Hora (R$)</label>
+                            <input type="number" id="calc-hour-rate" value="15" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Taxas Extras (R$)</label>
+                            <input type="number" id="calc-fees" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
+                            <p class="text-[10px] text-stone-400 mt-1">Embalagens, frete, etc.</p>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Margem de Lucro (%)</label>
+                            <input type="number" id="calc-profit" value="30" min="0" step="1" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
+                        </div>
+                    </div>
+                    <button onclick="window.resetCalculator()" class="text-xs font-bold text-stone-400 uppercase tracking-widest hover:text-stone-900 transition-colors flex items-center gap-2">
+                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Limpar Calculadora
+                    </button>
+                </div>
+                
+                <!-- Resultados -->
+                <div class="bg-stone-900 text-white rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-2xl">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-gold rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-8 relative z-10">
+                        <div>
+                            <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Mão de Obra</p>
+                            <p class="text-xl font-serif" id="calc-res-labor">R$ 0,00</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Custo de Produção</p>
+                            <p class="text-xl font-serif" id="calc-res-cost">R$ 0,00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8 relative z-10">
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                            <i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Lucro Líquido
+                        </p>
+                        <p class="text-2xl font-serif text-emerald-400" id="calc-res-profit">R$ 0,00</p>
+                    </div>
+                    
+                    <div class="border-t border-stone-700 pt-6 mt-auto relative z-10">
+                        <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-2">Preço Sugerido de Venda</p>
+                        <p class="text-5xl md:text-6xl font-serif" id="calc-res-total">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+    <div id="product-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[2rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-stone-100 px-8 py-6 flex items-center justify-between z-10">
+                <h3 class="text-2xl font-serif font-bold text-stone-900" id="modal-title">Adicionar Produto</h3>
+                <button onclick="window.closeProductModal()" class="p-2 hover:bg-stone-100 rounded-full transition-colors"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="p-8">
+                <form id="admin-product-form" onsubmit="window.saveProduct(event)" class="space-y-6">
+                    <input type="hidden" id="admin-prod-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome da Peça</label>
+                            <input type="text" id="admin-prod-name" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Categoria</label>
+                            <select id="admin-prod-category" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <option value="Vestuário">Vestuário</option>
+                                <option value="Moda Praia">Moda Praia</option>
+                                <option value="Acessórios">Acessórios</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Descrição</label>
+                        <textarea id="admin-prod-desc" required rows="3" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Links das Imagens (Separados por vírgula)</label>
+                        <textarea id="admin-prod-images" required rows="2" placeholder="assets/foto1.jpg, assets/foto2.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                        <p class="text-[10px] text-stone-400 mt-1">Cole os caminhos ou links (ex: https://...) separados por vírgula.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-stone-50 rounded-2xl border border-stone-100">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tamanhos e Preços</label>
+                            <textarea id="admin-prod-sizes" required rows="4" placeholder="Único|50.00, M|65.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong>. Separe tamanhos diferentes com vírgula.</p>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cores</label>
+                            <textarea id="admin-prod-colors" required rows="4" placeholder="Azul|#1D3557, Ouro|#D4AF37" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong>. Separe cores diferentes com vírgula.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end gap-4">
+                        <button type="button" onclick="window.closeProductModal()" class="px-6 py-3 rounded-xl font-bold text-sm text-stone-500 hover:bg-stone-100 transition-colors">Cancelar</button>
+                        <button type="submit" id="admin-save-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Guardar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-white border-t border-stone-100 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <img src="assets/Vector 1.png" alt="Logo" class="h-10 w-auto mx-auto mb-4 opacity-50 grayscale" onerror="this.style.display='none'">
+            <div class="flex items-center justify-center gap-2 text-[10px] font-bold text-stone-300 uppercase tracking-[0.6em]">
+                <span>© 2024 TRAMA D'ORO</span>
+                <span class="cursor-pointer hover:text-brand-gold transition-colors" onclick="window.switchView('admin-login')" title="Painel de Administração"><i data-lucide="lock" class="w-3 h-3"></i></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lógica da Aplicação + Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'trama-doro-db';
+        
+        let app, auth, db;
+        let isFirebaseActive = false;
+        let currentUser = null;
+
+        const BRAND = { whatsapp: "5543998579615", currency: "R$", categories: ["Todos", "Vestuário", "Moda Praia", "Acessórios"] };
+        
+        const DEFAULT_PRODUCTS = [
+            {
+                id: "1", name: "Vestido Midi Aura", category: "Vestuário",
+                description: "Trama exclusiva em fio de seda com acabamento dourado. Caimento impecável.",
+                images: ["https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=800"],
+                colors: [{ name: "Ouro", hex: "#D4AF37" }, { name: "Preto Absoluto", hex: "#1A1A1A" }],
+                sizes: [{ label: "P", price: 420.00 }, { label: "M", price: 480.00 }]
+            },
+            {
+                id: "3", name: "Bolsa Transversal Pequena", category: "Acessórios",
+                description: "Bolsa transversal com cerca de 30cm, feita em fio náutico de 3mm (aprox. 300g).",
+                images: ["assets/20260203_192522.jpg", "assets/20260203_192530.jpg"],
+                colors: [{ name: "Azul Náutico", hex: "#1D3557" }],
+                sizes: [{ label: "Único", price: 50.00 }]
+            }
+        ];
+
+        let PRODUCTS = [];
+        let productStates = {};
+        let currentCategory = "Todos";
+        let currentSearch = "";
+        let mobileMenuOpen = false;
+        let isAdminAuthed = false;
+
+        // ==========================================
+        // INICIALIZAÇÃO FIREBASE E DADOS
+        // ==========================================
+        async function initApp() {
+            try {
+                if(Object.keys(firebaseConfig).length > 0) {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+                    
+                    // Always await Auth First
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    
+                    onAuthStateChanged(auth, (user) => {
+                        currentUser = user;
+                        if(user) {
+                            isFirebaseActive = true;
+                            listenToProducts();
+                        }
+                    });
+                } else {
+                    PRODUCTS = [...DEFAULT_PRODUCTS];
+                    finishLoading();
+                }
+            } catch(e) {
+                console.warn("Firebase não inicializado, usando catálogo estático.", e);
+                PRODUCTS = [...DEFAULT_PRODUCTS];
+                finishLoading();
+            }
+        }
+
+        function listenToProducts() {
+            if (!currentUser) return;
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+            onSnapshot(colRef, (snapshot) => {
+                if (snapshot.empty && PRODUCTS.length === 0) {
+                    DEFAULT_PRODUCTS.forEach(async (p) => await setDoc(doc(colRef, p.id), p));
+                } else {
+                    PRODUCTS = [];
+                    snapshot.forEach(docSnap => PRODUCTS.push({ docId: docSnap.id, ...docSnap.data() }));
+                    finishLoading();
+                }
+            }, (error) => {
+                console.error("Erro ao carregar catálogo:", error);
+                PRODUCTS = [...DEFAULT_PRODUCTS];
+                finishLoading();
+            });
+        }
+
+        function finishLoading() {
+            PRODUCTS.forEach(p => { if(!productStates[p.id]) productStates[p.id] = { sizeIdx: 0, colorIdx: 0, imageIdx: 0 }; });
+            
+            document.getElementById('app-loading').classList.add('hidden');
+            document.getElementById('body-content').classList.remove('js-loading');
+            document.getElementById('body-content').classList.add('js-loaded');
+            
+            if(!isAdminAuthed && document.getElementById('admin-dashboard-view').classList.contains('block')) {
+                window.switchView('catalog');
+            }
+
+            renderCategories();
+            renderProducts();
+            renderAdminProducts();
+            lucide.createIcons();
+        }
+
+        // ==========================================
+        // NAVEGAÇÃO E UI DO CLIENTE
+        // ==========================================
+        window.switchView = (viewName) => {
+            const views = ['catalog-view', 'quote-view', 'admin-login-view', 'admin-dashboard-view'];
+            views.forEach(v => {
+                document.getElementById(v).classList.add('hidden');
+                document.getElementById(v).classList.remove('block');
+            });
+
+            if(viewName === 'admin-dashboard' && !isAdminAuthed) viewName = 'admin-login';
+
+            document.getElementById(viewName + '-view').classList.remove('hidden');
+            document.getElementById(viewName + '-view').classList.add('block');
+            
+            const header = document.getElementById('main-header');
+            if(viewName.includes('admin')) header.classList.add('hidden');
+            else header.classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.toggleMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            mobileMenuOpen = !mobileMenuOpen;
+            if(mobileMenuOpen) { menu.classList.remove('hidden'); menu.classList.add('flex'); } 
+            else { menu.classList.add('hidden'); menu.classList.remove('flex'); }
+        };
+
+        function renderCategories() {
+            const desk = document.getElementById('desktop-categories');
+            const mob = document.getElementById('mobile-categories');
+            desk.innerHTML = ''; mob.innerHTML = '';
+
+            BRAND.categories.forEach(cat => {
+                const isSelected = cat === currentCategory;
+                const cssDesk = isSelected ? 'text-brand-gold' : 'text-stone-400 hover:text-stone-900';
+                desk.innerHTML += `<button onclick="window.setCategory('${cat}')" class="text-[10px] font-bold uppercase tracking-widest transition-all ${cssDesk}">${cat}</button>`;
+                
+                const cssMob = isSelected ? 'text-brand-gold' : 'text-stone-500';
+                mob.innerHTML += `<button onclick="window.setCategory('${cat}'); window.toggleMobileMenu();" class="text-3xl font-serif ${cssMob}">${cat}</button>`;
+            });
+            document.getElementById('active-category-text').innerText = `Exibindo: ${currentCategory}`;
+        }
+
+        window.setCategory = (cat) => { currentCategory = cat; window.switchView('catalog'); renderCategories(); renderProducts(); };
+        window.handleSearch = (e) => { currentSearch = e.target.value; window.switchView('catalog'); renderProducts(); };
+        window.selectSize = (pId, idx) => { productStates[pId].sizeIdx = idx; renderProducts(); };
+        window.selectColor = (pId, idx) => { productStates[pId].colorIdx = idx; renderProducts(); };
+        window.changeImage = (e, pId, dir) => {
+            if(e) e.stopPropagation();
+            const p = PRODUCTS.find(x => x.id === pId);
+            const state = productStates[pId];
+            state.imageIdx += dir;
+            if (state.imageIdx < 0) state.imageIdx = p.images.length - 1;
+            else if (state.imageIdx >= p.images.length) state.imageIdx = 0;
+            renderProducts();
+        };
+
+        const formatPrice = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const empty = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            const filtered = PRODUCTS.filter(p => {
+                const mCat = currentCategory === "Todos" || p.category === currentCategory;
+                const mSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase()) || p.description.toLowerCase().includes(currentSearch.toLowerCase());
+                return mCat && mSearch;
+            });
+
+            if (filtered.length === 0) { grid.classList.add('hidden'); empty.classList.remove('hidden'); return; }
+            grid.classList.remove('hidden'); empty.classList.add('hidden');
+
+            filtered.forEach(p => {
+                const state = productStates[p.id];
+                const activeSize = p.sizes[state.sizeIdx] || p.sizes[0];
+                const activeColor = p.colors[state.colorIdx] || p.colors[0];
+                const activeImage = p.images[state.imageIdx] || p.images[0] || '';
+                const hasMultipleImg = p.images.length > 1;
+
+                const sizesHTML = p.sizes.map((s, idx) => `
+                    <button onclick="window.selectSize('${p.id}', ${idx})" class="py-3 rounded-xl text-xs font-bold transition-all border ${state.sizeIdx === idx ? 'bg-stone-900 border-stone-900 text-white shadow-lg' : 'border-stone-100 text-stone-500 hover:border-stone-300'}">${s.label}</button>
+                `).join('');
+
+                const colorsHTML = p.colors.map((c, idx) => `
+                    <button onclick="window.selectColor('${p.id}', ${idx})" class="w-10 h-10 rounded-full border-2 p-0.5 transition-all ${state.colorIdx === idx ? 'border-brand-gold scale-110' : 'border-transparent opacity-50'}" title="${c.name}">
+                        <div class="w-full h-full rounded-full shadow-inner border border-black/10" style="background-color: ${c.hex}"></div>
+                    </button>
+                `).join('');
+
+                const controls = hasMultipleImg ? `
+                    <button onclick="window.changeImage(event, '${p.id}', -1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-left" class="w-4 h-4 text-stone-900"></i></button>
+                    <button onclick="window.changeImage(event, '${p.id}', 1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-right" class="w-4 h-4 text-stone-900"></i></button>
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">
+                        ${p.images.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full transition-all ${idx === state.imageIdx ? 'bg-white w-3' : 'bg-white/50'}"></div>`).join('')}
+                    </div>` : '';
+
+                grid.innerHTML += `
+                    <div class="bg-white rounded-[2.5rem] border border-stone-100 overflow-hidden flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
+                        <div class="relative aspect-[4/5] overflow-hidden bg-stone-50">
+                            ${controls}
+                            <img src="${activeImage}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1584992236310-6edddc08acff?auto=format&fit=crop&q=80&w=800'">
+                            <div class="absolute top-6 left-6 z-10"><span class="bg-stone-900/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase">${p.category}</span></div>
+                        </div>
+                        <div class="p-8 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-serif font-bold text-stone-900 mb-2">${p.name}</h3>
+                            <p class="text-stone-400 text-sm italic mb-8">"${p.description}"</p>
+                            ${p.sizes.length > 0 ? `<div class="mb-6"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="ruler" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Tamanho</span></div><div class="grid grid-cols-3 gap-2">${sizesHTML}</div></div>` : ''}
+                            ${p.colors.length > 0 ? `<div class="mb-8"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="palette" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Cor: ${activeColor ? activeColor.name : ''}</span></div><div class="flex flex-wrap gap-4">${colorsHTML}</div></div>` : ''}
+                            <div class="mt-auto pt-6 border-t border-stone-50 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-tighter">Investimento</span>
+                                    <span class="text-2xl font-serif font-black text-stone-900 block mt-1">${BRAND.currency} ${activeSize ? formatPrice(activeSize.price) : '0,00'}</span>
+                                </div>
+                                <button onclick="window.sendOrder('${p.id}')" class="bg-brand-gold hover:bg-stone-900 text-white p-4 rounded-2xl transition-all shadow-lg active:scale-95"><i data-lucide="message-circle" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            lucide.createIcons();
+        }
+
+        window.sendOrder = (pId) => {
+            const p = PRODUCTS.find(x => x.id === pId);
+            const state = productStates[pId];
+            const size = p.sizes[state.sizeIdx] || p.sizes[0];
+            const color = p.colors[state.colorIdx] || p.colors[0];
+
+            let text = `*TRAMA D'ORO - PEDIDO*\n\nOlá! Gostaria de encomendar:\n*Peça:* ${p.name}\n`;
+            if(size) text += `*Tamanho:* ${size.label}\n*Valor:* ${BRAND.currency} ${formatPrice(size.price)}\n`;
+            if(color) text += `*Cor:* ${color.name}`;
+            window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
+        };
+
+        // ==========================================
+        // LÓGICA DO PAINEL ADMIN E CRUD
+        // ==========================================
+        window.verifyAdmin = () => {
+            const pin = document.getElementById('admin-pin').value;
+            if(pin === 'trama2026') { 
+                isAdminAuthed = true;
+                document.getElementById('admin-pin').value = '';
+                window.switchView('admin-dashboard');
+                renderAdminProducts();
+            } else {
+                alert("Palavra-passe incorreta.");
+            }
+        };
+
+        window.switchAdminTab = (tab) => {
+            const tabProd = document.getElementById('tab-products');
+            const tabCalc = document.getElementById('tab-calculator');
+            const secProd = document.getElementById('admin-products-section');
+            const secCalc = document.getElementById('admin-calculator-section');
+
+            if (tab === 'products') {
+                tabProd.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
+                tabCalc.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
+                secProd.classList.remove('hidden');
+                secCalc.classList.add('hidden');
+            } else {
+                tabCalc.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
+                tabProd.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
+                secCalc.classList.remove('hidden');
+                secProd.classList.add('hidden');
+            }
+        };
+
+        function renderAdminProducts() {
+            const tbody = document.getElementById('admin-products-list');
+            tbody.innerHTML = '';
+            
+            if(PRODUCTS.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-400 italic">Catálogo vazio.</td></tr>`;
+                return;
+            }
+
+            PRODUCTS.forEach(p => {
+                const img = p.images[0] || 'https://via.placeholder.com/150';
+                const price = p.sizes[0] ? formatPrice(p.sizes[0].price) : '0,00';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="px-6 py-4"><img src="${img}" class="w-12 h-12 rounded-lg object-cover bg-stone-200"></td>
+                        <td class="px-6 py-4"><p class="font-bold text-stone-900">${p.name}</p><p class="text-[10px] uppercase tracking-widest text-stone-400">${p.category}</p></td>
+                        <td class="px-6 py-4 font-serif text-lg">${BRAND.currency} ${price}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="window.openProductModal('${p.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="window.deleteProduct('${p.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        window.openProductModal = (id = null) => {
+            const modal = document.getElementById('product-modal');
+            const form = document.getElementById('admin-product-form');
+            const title = document.getElementById('modal-title');
+            
+            form.reset();
+            document.getElementById('admin-prod-id').value = '';
+
+            if (id) {
+                title.innerText = "Editar Peça";
+                const p = PRODUCTS.find(x => x.id === id);
+                if(p) {
+                    document.getElementById('admin-prod-id').value = p.id;
+                    document.getElementById('admin-prod-name').value = p.name;
+                    document.getElementById('admin-prod-category').value = p.category;
+                    document.getElementById('admin-prod-desc').value = p.description;
+                    document.getElementById('admin-prod-images').value = p.images.join(', ');
+                    document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
+                    document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
+                }
+            } else { title.innerText = "Nova Peça"; }
+            modal.classList.remove('hidden');
+        };
+
+        window.closeProductModal = () => document.getElementById('product-modal').classList.add('hidden');
+
+        window.saveProduct = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('admin-save-btn');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`;
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                const id = document.getElementById('admin-prod-id').value || Date.now().toString();
+                const sizesRaw = document.getElementById('admin-prod-sizes').value.split(',');
+                const sizes = sizesRaw.map(s => {
+                    const [label, price] = s.split('|');
+                    return (label && price) ? { label: label.trim(), price: parseFloat(price.trim()) } : null;
+                }).filter(Boolean);
+
+                const colorsRaw = document.getElementById('admin-prod-colors').value.split(',');
+                const colors = colorsRaw.map(c => {
+                    const [name, hex] = c.split('|');
+                    return (name && hex) ? { name: name.trim(), hex: hex.trim() } : null;
+                }).filter(Boolean);
+
+                const imagesRaw = document.getElementById('admin-prod-images').value.split(',');
+                const images = imagesRaw.map(i => i.trim()).filter(Boolean);
+
+                const productData = {
+                    id: id,
+                    name: document.getElementById('admin-prod-name').value.trim(),
+                    category: document.getElementById('admin-prod-category').value,
+                    description: document.getElementById('admin-prod-desc').value.trim(),
+                    images: images, sizes: sizes, colors: colors
+                };
+
+                if (isFirebaseActive && currentUser) {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                    await setDoc(doc(colRef, id), productData);
+                } else {
+                    const existingIdx = PRODUCTS.findIndex(p => p.id === id);
+                    if(existingIdx >= 0) PRODUCTS[existingIdx] = productData;
+                    else PRODUCTS.push(productData);
+                    renderProducts(); renderAdminProducts();
+                }
+                window.closeProductModal();
+            } catch(error) {
+                console.error("Erro ao guardar:", error);
+                alert("Erro ao guardar. Verifique o formato (Nome|Valor).");
+            } finally {
+                btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar Produto`;
+                btn.disabled = false; lucide.createIcons();
+            }
+        };
+
+        window.deleteProduct = async (id) => {
+            if(confirm("Deseja eliminar esta peça? Ação irreversível.")) {
+                if (isFirebaseActive && currentUser) {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                    await deleteDoc(doc(colRef, id));
+                } else {
+                    PRODUCTS = PRODUCTS.filter(p => p.id !== id);
+                    renderProducts(); renderAdminProducts();
+                }
+            }
+        };
+
+        // ==========================================
+        // LÓGICA DA CALCULADORA DE PRECIFICAÇÃO
+        // ==========================================
+        window.calculatePrice = () => {
+            const material = parseFloat(document.getElementById('calc-material').value) || 0;
+            const hours = parseFloat(document.getElementById('calc-hours').value) || 0;
+            const hourRate = parseFloat(document.getElementById('calc-hour-rate').value) || 0;
+            const fees = parseFloat(document.getElementById('calc-fees').value) || 0;
+            const profitMargin = parseFloat(document.getElementById('calc-profit').value) || 0;
+
+            const laborCost = hours * hourRate;
+            const productionCost = material + laborCost + fees;
+            
+            // Cálculo do Lucro por cima do custo de produção (Markup)
+            const profitValue = productionCost * (profitMargin / 100);
+            const totalSuggested = productionCost + profitValue;
+
+            document.getElementById('calc-res-labor').innerText = `R$ ${formatPrice(laborCost)}`;
+            document.getElementById('calc-res-cost').innerText = `R$ ${formatPrice(productionCost)}`;
+            document.getElementById('calc-res-profit').innerText = `R$ ${formatPrice(profitValue)}`;
+            document.getElementById('calc-res-total').innerText = `R$ ${formatPrice(totalSuggested)}`;
+        };
+
+        window.resetCalculator = () => {
+            document.getElementById('calc-material').value = 0;
+            document.getElementById('calc-hours').value = 0;
+            document.getElementById('calc-fees').value = 0;
+            document.getElementById('calc-hour-rate').value = 15;
+            document.getElementById('calc-profit').value = 30;
+            window.calculatePrice();
+        };
+
+        // Form Utils
+        window.updateFileName = (input) => {
+            const display = document.getElementById('file-name-display');
+            if (input.files && input.files.length > 0) {
+                display.innerText = "Ficheiro selecionado: " + input.files[0].name;
+                display.classList.add('text-brand-gold', 'font-bold');
+            }
+        };
+        window.submitCustomQuote = (e) => { /* Netlify nativo */ };
+
+        initApp();
+    </script>
+</body>
+</html>
