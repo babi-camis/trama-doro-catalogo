@@ -101,10 +101,10 @@
         </button>
     </div>
 
-    <!-- ESTADO GLOBAL DE CARREGAMENTO (FIREBASE) -->
+    <!-- ESTADO GLOBAL DE CARREGAMENTO -->
     <div id="app-loading" class="fixed inset-0 bg-brand-light z-[100] flex flex-col items-center justify-center">
         <i data-lucide="loader-2" class="w-12 h-12 text-brand-gold animate-spin mb-4"></i>
-        <p class="text-stone-400 text-sm tracking-widest uppercase font-bold">A sincronizar catálogo...</p>
+        <p class="text-stone-400 text-sm tracking-widest uppercase font-bold" id="loading-text">A carregar catálogo...</p>
     </div>
 
     <!-- VISTA 1: CATÁLOGO -->
@@ -137,7 +137,7 @@
         </div>
     </main>
 
-    <!-- VISTA 2: ORÇAMENTO EXCLUSIVO -->
+    <!-- VISTA 2: ORÇAMENTO EXCLUSIVO (Netlify Forms) -->
     <main id="quote-view" class="max-w-4xl mx-auto px-6 py-20 hidden">
         <div class="text-center mb-12">
             <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-4">Design Sob Medida</h2>
@@ -205,12 +205,12 @@
             <div class="w-16 h-16 bg-stone-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <i data-lucide="lock" class="w-8 h-8 text-brand-gold"></i>
             </div>
-            <h2 class="text-2xl font-serif font-bold text-stone-900 mb-2">Painel Administrativo</h2>
-            <p class="text-stone-500 text-sm mb-8">Introduza a palavra-passe para aceder à gestão do catálogo.</p>
+            <h2 class="text-2xl font-serif font-bold text-stone-900 mb-2">Acesso Restrito</h2>
+            <p class="text-stone-500 text-sm mb-8">Introduza a palavra-passe para aceder ao sistema de gestão.</p>
             
             <input type="password" id="admin-pin" placeholder="Palavra-passe" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-5 py-4 text-center text-lg tracking-[0.2em] focus:outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all mb-6">
             
-            <button onclick="window.verifyAdmin()" class="w-full bg-stone-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-brand-gold transition-all">Entrar no Painel</button>
+            <button onclick="window.verifyAdmin()" class="w-full bg-stone-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-brand-gold transition-all">Entrar</button>
             <button onclick="window.switchView('catalog')" class="w-full mt-4 text-stone-400 text-xs font-bold uppercase hover:text-stone-900 transition-colors">Voltar ao site</button>
         </div>
     </main>
@@ -219,23 +219,20 @@
     <main id="admin-dashboard-view" class="max-w-7xl mx-auto px-6 py-12 hidden">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 bg-stone-900 text-white p-8 rounded-[2rem]">
             <div>
-                <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-2">Área Reservada</h2>
-                <h1 class="text-3xl font-serif">Painel Administrativo</h1>
+                <h2 class="text-brand-gold text-xs font-bold tracking-[0.5em] uppercase mb-2">Painel de Controle</h2>
+                <h1 class="text-3xl font-serif">Gestão Trama d'Oro</h1>
             </div>
-            <div class="flex gap-4">
-                <button onclick="window.switchView('catalog')" class="flex items-center gap-2 bg-stone-800 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-700 transition-all">
-                    Sair
-                </button>
-            </div>
+            <button onclick="window.switchView('catalog')" class="flex items-center gap-2 bg-stone-800 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-700 transition-all">
+                Sair
+            </button>
         </div>
 
-        <!-- Abas de Navegação -->
         <div class="flex gap-8 mb-8 border-b border-stone-200">
             <button onclick="window.switchAdminTab('products')" id="tab-products" class="text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all">Catálogo</button>
-            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all">Calculadora de Precificação</button>
+            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all">Calculadora</button>
         </div>
 
-        <!-- Seção: Gestão de Produtos -->
+        <!-- Tabela de Produtos -->
         <div id="admin-products-section" class="block">
             <div class="flex justify-end mb-4">
                 <button onclick="window.openProductModal()" class="flex items-center gap-2 bg-brand-gold text-stone-900 px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-900 hover:text-white transition-all shadow-lg">
@@ -249,7 +246,6 @@
                             <tr>
                                 <th class="px-6 py-4 font-bold">Imagem</th>
                                 <th class="px-6 py-4 font-bold">Nome & Categoria</th>
-                                <th class="px-6 py-4 font-bold">Preço Base</th>
                                 <th class="px-6 py-4 font-bold text-right">Ações</th>
                             </tr>
                         </thead>
@@ -261,7 +257,7 @@
             </div>
         </div>
 
-        <!-- Seção: Calculadora -->
+        <!-- Calculadora -->
         <div id="admin-calculator-section" class="hidden bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100 text-stone-900">
             <div class="flex items-center gap-3 mb-8">
                 <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
@@ -269,17 +265,15 @@
                 </div>
                 <div>
                     <h3 class="text-2xl font-serif font-bold">Calculadora Inteligente</h3>
-                    <p class="text-stone-500 text-sm">Calcule o preço exato para os seus orçamentos exclusivos.</p>
+                    <p class="text-stone-500 text-sm">Calcule o preço exato para os seus orçamentos.</p>
                 </div>
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- Inputs -->
                 <div class="space-y-6">
                     <div>
                         <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Custo de Materiais (R$)</label>
                         <input type="number" id="calc-material" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                        <p class="text-[10px] text-stone-400 mt-1">Fios, ferragens, forro, etc.</p>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -287,7 +281,7 @@
                             <input type="number" id="calc-hours" value="0" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor da Hora (R$)</label>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor Hora (R$)</label>
                             <input type="number" id="calc-hour-rate" value="15" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
                         </div>
                     </div>
@@ -295,10 +289,9 @@
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Taxas Extras (R$)</label>
                             <input type="number" id="calc-fees" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                            <p class="text-[10px] text-stone-400 mt-1">Embalagens, frete, etc.</p>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Margem de Lucro (%)</label>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Margem Lucro (%)</label>
                             <input type="number" id="calc-profit" value="30" min="0" step="1" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
                         </div>
                     </div>
@@ -307,30 +300,18 @@
                     </button>
                 </div>
                 
-                <!-- Resultados -->
                 <div class="bg-stone-900 text-white rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-2xl">
                     <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-gold rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
-                    
                     <div class="grid grid-cols-2 gap-6 mb-8 relative z-10">
-                        <div>
-                            <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Mão de Obra</p>
-                            <p class="text-xl font-serif" id="calc-res-labor">R$ 0,00</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Custo de Produção</p>
-                            <p class="text-xl font-serif" id="calc-res-cost">R$ 0,00</p>
-                        </div>
+                        <div><p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Mão de Obra</p><p class="text-xl font-serif" id="calc-res-labor">R$ 0,00</p></div>
+                        <div><p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Custo Produção</p><p class="text-xl font-serif" id="calc-res-cost">R$ 0,00</p></div>
                     </div>
-                    
                     <div class="mb-8 relative z-10">
-                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                            <i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Lucro Líquido
-                        </p>
+                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Lucro Líquido</p>
                         <p class="text-2xl font-serif text-emerald-400" id="calc-res-profit">R$ 0,00</p>
                     </div>
-                    
                     <div class="border-t border-stone-700 pt-6 mt-auto relative z-10">
-                        <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-2">Preço Sugerido de Venda</p>
+                        <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-2">Preço Sugerido</p>
                         <p class="text-5xl md:text-6xl font-serif" id="calc-res-total">R$ 0,00</p>
                     </div>
                 </div>
@@ -372,20 +353,20 @@
 
                     <div>
                         <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Links das Imagens (Separados por vírgula)</label>
-                        <textarea id="admin-prod-images" required rows="2" placeholder="assets/foto1.jpg, assets/foto2.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                        <p class="text-[10px] text-stone-400 mt-1">Cole os caminhos ou links (ex: https://...) separados por vírgula.</p>
+                        <textarea id="admin-prod-images" required rows="2" placeholder="https://i.imgur.com/foto1.jpg, https://i.imgur.com/foto2.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                        <p class="text-[10px] text-stone-400 mt-1">Gere links de imagem gratuitos no site <strong>postimages.org</strong> e cole aqui separados por vírgula.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-stone-50 rounded-2xl border border-stone-100">
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tamanhos e Preços</label>
                             <textarea id="admin-prod-sizes" required rows="4" placeholder="Único|50.00, M|65.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong>. Separe tamanhos diferentes com vírgula.</p>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong>. Separe opções com vírgula.</p>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cores</label>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cores Disponíveis</label>
                             <textarea id="admin-prod-colors" required rows="4" placeholder="Azul|#1D3557, Ouro|#D4AF37" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong>. Separe cores diferentes com vírgula.</p>
+                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong>. Separe opções com vírgula.</p>
                         </div>
                     </div>
 
@@ -406,43 +387,32 @@
             <img src="assets/Vector 1.png" alt="Logo" class="h-10 w-auto mx-auto mb-4 opacity-50 grayscale" onerror="this.style.display='none'">
             <div class="flex items-center justify-center gap-2 text-[10px] font-bold text-stone-300 uppercase tracking-[0.6em]">
                 <span>© 2024 TRAMA D'ORO</span>
-                <span class="cursor-pointer hover:text-brand-gold transition-colors" onclick="window.switchView('admin-login')" title="Painel de Administração"><i data-lucide="lock" class="w-3 h-3"></i></span>
+                <span class="cursor-pointer hover:text-brand-gold transition-colors" onclick="window.switchView('admin-login')" title="Administração"><i data-lucide="lock" class="w-3 h-3"></i></span>
             </div>
         </div>
     </footer>
 
-    <!-- Lógica da Aplicação + Firebase -->
+    <!-- LÓGICA CORE + FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'trama-doro-db';
-        
-        let app, auth, db;
-        let isFirebaseActive = false;
-        let currentUser = null;
+        // =========================================================================
+        // ATENÇÃO: COLOQUE AQUI AS SUAS CHAVES DO FIREBASE PARA O BANCO DE DADOS
+        // =========================================================================
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: ""
+        };
 
         const BRAND = { whatsapp: "5543998579615", currency: "R$", categories: ["Todos", "Vestuário", "Moda Praia", "Acessórios"] };
         
-        const DEFAULT_PRODUCTS = [
-            {
-                id: "1", name: "Vestido Midi Aura", category: "Vestuário",
-                description: "Trama exclusiva em fio de seda com acabamento dourado. Caimento impecável.",
-                images: ["https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=800"],
-                colors: [{ name: "Ouro", hex: "#D4AF37" }, { name: "Preto Absoluto", hex: "#1A1A1A" }],
-                sizes: [{ label: "P", price: 420.00 }, { label: "M", price: 480.00 }]
-            },
-            {
-                id: "3", name: "Bolsa Transversal Pequena", category: "Acessórios",
-                description: "Bolsa transversal com cerca de 30cm, feita em fio náutico de 3mm (aprox. 300g).",
-                images: ["assets/20260203_192522.jpg", "assets/20260203_192530.jpg"],
-                colors: [{ name: "Azul Náutico", hex: "#1D3557" }],
-                sizes: [{ label: "Único", price: 50.00 }]
-            }
-        ];
-
+        let app, db;
+        let isFirebaseActive = false;
         let PRODUCTS = [];
         let productStates = {};
         let currentCategory = "Todos";
@@ -450,95 +420,71 @@
         let mobileMenuOpen = false;
         let isAdminAuthed = false;
 
-        // ==========================================
-        // INICIALIZAÇÃO FIREBASE E DADOS
-        // ==========================================
-        async function initApp() {
+        const DEFAULT_PRODUCTS = [
+            {
+                id: "1", name: "Bolsa Transversal Pequena", category: "Acessórios",
+                description: "Bolsa transversal com cerca de 30cm, feita em fio náutico de 3mm.",
+                images: ["assets/20260203_192522.jpg", "assets/20260203_192530.jpg"],
+                colors: [{ name: "Azul Náutico", hex: "#1D3557" }], sizes: [{ label: "Único", price: 50.00 }]
+            }
+        ];
+
+        function initApp() {
+            if(!firebaseConfig.projectId || firebaseConfig.projectId === "") {
+                console.warn("Firebase não configurado. Adicione suas chaves no código.");
+                PRODUCTS = [...DEFAULT_PRODUCTS];
+                finishLoading();
+                return;
+            }
+
             try {
-                if(Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    
-                    // Always await Auth First
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    
-                    onAuthStateChanged(auth, (user) => {
-                        currentUser = user;
-                        if(user) {
-                            isFirebaseActive = true;
-                            listenToProducts();
-                        }
-                    });
-                } else {
-                    PRODUCTS = [...DEFAULT_PRODUCTS];
-                    finishLoading();
-                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                isFirebaseActive = true;
+                listenToProducts();
             } catch(e) {
-                console.warn("Firebase não inicializado, usando catálogo estático.", e);
+                document.getElementById('loading-text').innerText = "Erro ao conectar ao banco de dados.";
                 PRODUCTS = [...DEFAULT_PRODUCTS];
                 finishLoading();
             }
         }
 
         function listenToProducts() {
-            if (!currentUser) return;
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+            const colRef = collection(db, 'products');
             onSnapshot(colRef, (snapshot) => {
                 if (snapshot.empty && PRODUCTS.length === 0) {
                     DEFAULT_PRODUCTS.forEach(async (p) => await setDoc(doc(colRef, p.id), p));
                 } else {
                     PRODUCTS = [];
-                    snapshot.forEach(docSnap => PRODUCTS.push({ docId: docSnap.id, ...docSnap.data() }));
+                    snapshot.forEach(docSnap => PRODUCTS.push({ id: docSnap.id, ...docSnap.data() }));
                     finishLoading();
                 }
             }, (error) => {
-                console.error("Erro ao carregar catálogo:", error);
-                PRODUCTS = [...DEFAULT_PRODUCTS];
-                finishLoading();
+                console.error(error);
+                document.getElementById('loading-text').innerText = "Acesso negado ao Banco de Dados.";
+                setTimeout(() => { PRODUCTS = [...DEFAULT_PRODUCTS]; finishLoading(); }, 3000);
             });
         }
 
         function finishLoading() {
             PRODUCTS.forEach(p => { if(!productStates[p.id]) productStates[p.id] = { sizeIdx: 0, colorIdx: 0, imageIdx: 0 }; });
-            
             document.getElementById('app-loading').classList.add('hidden');
             document.getElementById('body-content').classList.remove('js-loading');
             document.getElementById('body-content').classList.add('js-loaded');
             
-            if(!isAdminAuthed && document.getElementById('admin-dashboard-view').classList.contains('block')) {
-                window.switchView('catalog');
-            }
-
-            renderCategories();
-            renderProducts();
-            renderAdminProducts();
-            lucide.createIcons();
+            // FORÇA A ABERTURA DO CATÁLOGO DE PRODUTOS QUANDO O SITE ACABA DE CARREGAR
+            window.switchView('catalog');
+            
+            renderCategories(); renderProducts(); renderAdminProducts(); lucide.createIcons();
         }
 
-        // ==========================================
-        // NAVEGAÇÃO E UI DO CLIENTE
-        // ==========================================
         window.switchView = (viewName) => {
             const views = ['catalog-view', 'quote-view', 'admin-login-view', 'admin-dashboard-view'];
-            views.forEach(v => {
-                document.getElementById(v).classList.add('hidden');
-                document.getElementById(v).classList.remove('block');
-            });
-
+            views.forEach(v => { document.getElementById(v).classList.add('hidden'); document.getElementById(v).classList.remove('block'); });
             if(viewName === 'admin-dashboard' && !isAdminAuthed) viewName = 'admin-login';
-
-            document.getElementById(viewName + '-view').classList.remove('hidden');
-            document.getElementById(viewName + '-view').classList.add('block');
-            
+            document.getElementById(viewName + '-view').classList.remove('hidden'); document.getElementById(viewName + '-view').classList.add('block');
             const header = document.getElementById('main-header');
-            if(viewName.includes('admin')) header.classList.add('hidden');
-            else header.classList.remove('hidden');
-            
+            if(viewName.includes('admin')) header.classList.add('hidden'); else header.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -550,17 +496,12 @@
         };
 
         function renderCategories() {
-            const desk = document.getElementById('desktop-categories');
-            const mob = document.getElementById('mobile-categories');
+            const desk = document.getElementById('desktop-categories'); const mob = document.getElementById('mobile-categories');
             desk.innerHTML = ''; mob.innerHTML = '';
-
             BRAND.categories.forEach(cat => {
-                const isSelected = cat === currentCategory;
-                const cssDesk = isSelected ? 'text-brand-gold' : 'text-stone-400 hover:text-stone-900';
-                desk.innerHTML += `<button onclick="window.setCategory('${cat}')" class="text-[10px] font-bold uppercase tracking-widest transition-all ${cssDesk}">${cat}</button>`;
-                
-                const cssMob = isSelected ? 'text-brand-gold' : 'text-stone-500';
-                mob.innerHTML += `<button onclick="window.setCategory('${cat}'); window.toggleMobileMenu();" class="text-3xl font-serif ${cssMob}">${cat}</button>`;
+                const isSel = cat === currentCategory;
+                desk.innerHTML += `<button onclick="window.setCategory('${cat}')" class="text-[10px] font-bold uppercase tracking-widest transition-all ${isSel ? 'text-brand-gold' : 'text-stone-400 hover:text-stone-900'}">${cat}</button>`;
+                mob.innerHTML += `<button onclick="window.setCategory('${cat}'); window.toggleMobileMenu();" class="text-3xl font-serif ${isSel ? 'text-brand-gold' : 'text-stone-500'}">${cat}</button>`;
             });
             document.getElementById('active-category-text').innerText = `Exibindo: ${currentCategory}`;
         }
@@ -571,27 +512,18 @@
         window.selectColor = (pId, idx) => { productStates[pId].colorIdx = idx; renderProducts(); };
         window.changeImage = (e, pId, dir) => {
             if(e) e.stopPropagation();
-            const p = PRODUCTS.find(x => x.id === pId);
-            const state = productStates[pId];
+            const p = PRODUCTS.find(x => x.id === pId); const state = productStates[pId];
             state.imageIdx += dir;
-            if (state.imageIdx < 0) state.imageIdx = p.images.length - 1;
-            else if (state.imageIdx >= p.images.length) state.imageIdx = 0;
+            if (state.imageIdx < 0) state.imageIdx = p.images.length - 1; else if (state.imageIdx >= p.images.length) state.imageIdx = 0;
             renderProducts();
         };
 
         const formatPrice = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         function renderProducts() {
-            const grid = document.getElementById('products-grid');
-            const empty = document.getElementById('empty-state');
+            const grid = document.getElementById('products-grid'); const empty = document.getElementById('empty-state');
             grid.innerHTML = '';
-
-            const filtered = PRODUCTS.filter(p => {
-                const mCat = currentCategory === "Todos" || p.category === currentCategory;
-                const mSearch = p.name.toLowerCase().includes(currentSearch.toLowerCase()) || p.description.toLowerCase().includes(currentSearch.toLowerCase());
-                return mCat && mSearch;
-            });
-
+            const filtered = PRODUCTS.filter(p => (currentCategory === "Todos" || p.category === currentCategory) && (p.name.toLowerCase().includes(currentSearch.toLowerCase()) || p.description.toLowerCase().includes(currentSearch.toLowerCase())));
             if (filtered.length === 0) { grid.classList.add('hidden'); empty.classList.remove('hidden'); return; }
             grid.classList.remove('hidden'); empty.classList.add('hidden');
 
@@ -600,24 +532,14 @@
                 const activeSize = p.sizes[state.sizeIdx] || p.sizes[0];
                 const activeColor = p.colors[state.colorIdx] || p.colors[0];
                 const activeImage = p.images[state.imageIdx] || p.images[0] || '';
-                const hasMultipleImg = p.images.length > 1;
-
-                const sizesHTML = p.sizes.map((s, idx) => `
-                    <button onclick="window.selectSize('${p.id}', ${idx})" class="py-3 rounded-xl text-xs font-bold transition-all border ${state.sizeIdx === idx ? 'bg-stone-900 border-stone-900 text-white shadow-lg' : 'border-stone-100 text-stone-500 hover:border-stone-300'}">${s.label}</button>
-                `).join('');
-
-                const colorsHTML = p.colors.map((c, idx) => `
-                    <button onclick="window.selectColor('${p.id}', ${idx})" class="w-10 h-10 rounded-full border-2 p-0.5 transition-all ${state.colorIdx === idx ? 'border-brand-gold scale-110' : 'border-transparent opacity-50'}" title="${c.name}">
-                        <div class="w-full h-full rounded-full shadow-inner border border-black/10" style="background-color: ${c.hex}"></div>
-                    </button>
-                `).join('');
-
-                const controls = hasMultipleImg ? `
+                
+                const sizesHTML = p.sizes.map((s, idx) => `<button onclick="window.selectSize('${p.id}', ${idx})" class="py-3 rounded-xl text-xs font-bold transition-all border ${state.sizeIdx === idx ? 'bg-stone-900 text-white shadow-lg' : 'border-stone-100 text-stone-500 hover:border-stone-300'}">${s.label}</button>`).join('');
+                const colorsHTML = p.colors.map((c, idx) => `<button onclick="window.selectColor('${p.id}', ${idx})" class="w-10 h-10 rounded-full border-2 p-0.5 transition-all ${state.colorIdx === idx ? 'border-brand-gold scale-110' : 'border-transparent opacity-50'}" title="${c.name}"><div class="w-full h-full rounded-full shadow-inner border border-black/10" style="background-color: ${c.hex}"></div></button>`).join('');
+                
+                const controls = p.images.length > 1 ? `
                     <button onclick="window.changeImage(event, '${p.id}', -1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-left" class="w-4 h-4 text-stone-900"></i></button>
                     <button onclick="window.changeImage(event, '${p.id}', 1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-1.5 rounded-full backdrop-blur-md transition-all shadow-md z-10 opacity-0 group-hover:opacity-100"><i data-lucide="chevron-right" class="w-4 h-4 text-stone-900"></i></button>
-                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">
-                        ${p.images.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full transition-all ${idx === state.imageIdx ? 'bg-white w-3' : 'bg-white/50'}"></div>`).join('')}
-                    </div>` : '';
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">${p.images.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full transition-all ${idx === state.imageIdx ? 'bg-white w-3' : 'bg-white/50'}"></div>`).join('')}</div>` : '';
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-[2.5rem] border border-stone-100 overflow-hidden flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
@@ -632,10 +554,7 @@
                             ${p.sizes.length > 0 ? `<div class="mb-6"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="ruler" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Tamanho</span></div><div class="grid grid-cols-3 gap-2">${sizesHTML}</div></div>` : ''}
                             ${p.colors.length > 0 ? `<div class="mb-8"><div class="flex items-center gap-2 mb-3 text-stone-400"><i data-lucide="palette" class="w-4 h-4"></i><span class="text-[10px] font-bold uppercase tracking-widest">Cor: ${activeColor ? activeColor.name : ''}</span></div><div class="flex flex-wrap gap-4">${colorsHTML}</div></div>` : ''}
                             <div class="mt-auto pt-6 border-t border-stone-50 flex items-center justify-between">
-                                <div>
-                                    <span class="text-[10px] font-bold text-stone-400 uppercase tracking-tighter">Investimento</span>
-                                    <span class="text-2xl font-serif font-black text-stone-900 block mt-1">${BRAND.currency} ${activeSize ? formatPrice(activeSize.price) : '0,00'}</span>
-                                </div>
+                                <div><span class="text-[10px] font-bold text-stone-400 uppercase tracking-tighter">Investimento</span><span class="text-2xl font-serif font-black text-stone-900 block mt-1">${BRAND.currency} ${activeSize ? formatPrice(activeSize.price) : '0,00'}</span></div>
                                 <button onclick="window.sendOrder('${p.id}')" class="bg-brand-gold hover:bg-stone-900 text-white p-4 rounded-2xl transition-all shadow-lg active:scale-95"><i data-lucide="message-circle" class="w-5 h-5"></i></button>
                             </div>
                         </div>
@@ -645,209 +564,116 @@
         }
 
         window.sendOrder = (pId) => {
-            const p = PRODUCTS.find(x => x.id === pId);
-            const state = productStates[pId];
-            const size = p.sizes[state.sizeIdx] || p.sizes[0];
-            const color = p.colors[state.colorIdx] || p.colors[0];
-
+            const p = PRODUCTS.find(x => x.id === pId); const state = productStates[pId];
+            const size = p.sizes[state.sizeIdx] || p.sizes[0]; const color = p.colors[state.colorIdx] || p.colors[0];
             let text = `*TRAMA D'ORO - PEDIDO*\n\nOlá! Gostaria de encomendar:\n*Peça:* ${p.name}\n`;
             if(size) text += `*Tamanho:* ${size.label}\n*Valor:* ${BRAND.currency} ${formatPrice(size.price)}\n`;
             if(color) text += `*Cor:* ${color.name}`;
             window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        // ==========================================
-        // LÓGICA DO PAINEL ADMIN E CRUD
-        // ==========================================
         window.verifyAdmin = () => {
-            const pin = document.getElementById('admin-pin').value;
-            if(pin === 'trama2026') { 
-                isAdminAuthed = true;
-                document.getElementById('admin-pin').value = '';
-                window.switchView('admin-dashboard');
+            if(document.getElementById('admin-pin').value === 'trama2026') { 
+                isAdminAuthed = true; document.getElementById('admin-pin').value = ''; window.switchView('admin-dashboard'); 
                 renderAdminProducts();
-            } else {
-                alert("Palavra-passe incorreta.");
-            }
+            } else alert("Palavra-passe incorreta.");
         };
 
         window.switchAdminTab = (tab) => {
-            const tabProd = document.getElementById('tab-products');
-            const tabCalc = document.getElementById('tab-calculator');
-            const secProd = document.getElementById('admin-products-section');
-            const secCalc = document.getElementById('admin-calculator-section');
-
+            const tabProd = document.getElementById('tab-products'); const tabCalc = document.getElementById('tab-calculator');
+            const secProd = document.getElementById('admin-products-section'); const secCalc = document.getElementById('admin-calculator-section');
             if (tab === 'products') {
                 tabProd.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
                 tabCalc.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
-                secProd.classList.remove('hidden');
-                secCalc.classList.add('hidden');
+                secProd.classList.remove('hidden'); secCalc.classList.add('hidden');
             } else {
                 tabCalc.className = "text-brand-gold font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all";
                 tabProd.className = "text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all";
-                secCalc.classList.remove('hidden');
-                secProd.classList.add('hidden');
+                secCalc.classList.remove('hidden'); secProd.classList.add('hidden');
             }
         };
 
         function renderAdminProducts() {
-            const tbody = document.getElementById('admin-products-list');
-            tbody.innerHTML = '';
-            
-            if(PRODUCTS.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-400 italic">Catálogo vazio.</td></tr>`;
-                return;
-            }
-
+            const tbody = document.getElementById('admin-products-list'); tbody.innerHTML = '';
+            if(PRODUCTS.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-400 italic">Catálogo vazio.</td></tr>`; return; }
             PRODUCTS.forEach(p => {
-                const img = p.images[0] || 'https://via.placeholder.com/150';
-                const price = p.sizes[0] ? formatPrice(p.sizes[0].price) : '0,00';
-                
+                const img = p.images[0] || 'https://via.placeholder.com/150'; const price = p.sizes[0] ? formatPrice(p.sizes[0].price) : '0,00';
                 tbody.innerHTML += `
                     <tr class="hover:bg-stone-50 transition-colors">
                         <td class="px-6 py-4"><img src="${img}" class="w-12 h-12 rounded-lg object-cover bg-stone-200"></td>
                         <td class="px-6 py-4"><p class="font-bold text-stone-900">${p.name}</p><p class="text-[10px] uppercase tracking-widest text-stone-400">${p.category}</p></td>
-                        <td class="px-6 py-4 font-serif text-lg">${BRAND.currency} ${price}</td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-6 py-4 font-serif text-lg text-right">
                             <button onclick="window.openProductModal('${p.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
                             <button onclick="window.deleteProduct('${p.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
             lucide.createIcons();
         }
 
         window.openProductModal = (id = null) => {
-            const modal = document.getElementById('product-modal');
-            const form = document.getElementById('admin-product-form');
-            const title = document.getElementById('modal-title');
-            
-            form.reset();
+            document.getElementById('admin-product-form').reset();
             document.getElementById('admin-prod-id').value = '';
-
+            const title = document.getElementById('modal-title');
             if (id) {
-                title.innerText = "Editar Peça";
-                const p = PRODUCTS.find(x => x.id === id);
+                title.innerText = "Editar Peça"; const p = PRODUCTS.find(x => x.id === id);
                 if(p) {
-                    document.getElementById('admin-prod-id').value = p.id;
-                    document.getElementById('admin-prod-name').value = p.name;
-                    document.getElementById('admin-prod-category').value = p.category;
-                    document.getElementById('admin-prod-desc').value = p.description;
+                    document.getElementById('admin-prod-id').value = p.id; document.getElementById('admin-prod-name').value = p.name;
+                    document.getElementById('admin-prod-category').value = p.category; document.getElementById('admin-prod-desc').value = p.description;
                     document.getElementById('admin-prod-images').value = p.images.join(', ');
                     document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
                     document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
                 }
             } else { title.innerText = "Nova Peça"; }
-            modal.classList.remove('hidden');
+            document.getElementById('product-modal').classList.remove('hidden');
         };
 
         window.closeProductModal = () => document.getElementById('product-modal').classList.add('hidden');
 
         window.saveProduct = async (e) => {
             e.preventDefault();
+            if (!isFirebaseActive) { alert("Configure as chaves do Firebase no código-fonte (linha 476) para salvar seus dados na nuvem."); return; }
+
             const btn = document.getElementById('admin-save-btn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`;
-            btn.disabled = true;
-            lucide.createIcons();
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; btn.disabled = true; lucide.createIcons();
 
             try {
                 const id = document.getElementById('admin-prod-id').value || Date.now().toString();
-                const sizesRaw = document.getElementById('admin-prod-sizes').value.split(',');
-                const sizes = sizesRaw.map(s => {
-                    const [label, price] = s.split('|');
-                    return (label && price) ? { label: label.trim(), price: parseFloat(price.trim()) } : null;
-                }).filter(Boolean);
-
-                const colorsRaw = document.getElementById('admin-prod-colors').value.split(',');
-                const colors = colorsRaw.map(c => {
-                    const [name, hex] = c.split('|');
-                    return (name && hex) ? { name: name.trim(), hex: hex.trim() } : null;
-                }).filter(Boolean);
-
-                const imagesRaw = document.getElementById('admin-prod-images').value.split(',');
-                const images = imagesRaw.map(i => i.trim()).filter(Boolean);
+                const sizes = document.getElementById('admin-prod-sizes').value.split(',').map(s => { const [l, p] = s.split('|'); return (l && p) ? { label: l.trim(), price: parseFloat(p.trim()) } : null; }).filter(Boolean);
+                const colors = document.getElementById('admin-prod-colors').value.split(',').map(c => { const [n, h] = c.split('|'); return (n && h) ? { name: n.trim(), hex: h.trim() } : null; }).filter(Boolean);
+                const images = document.getElementById('admin-prod-images').value.split(',').map(i => i.trim()).filter(Boolean);
 
                 const productData = {
-                    id: id,
-                    name: document.getElementById('admin-prod-name').value.trim(),
-                    category: document.getElementById('admin-prod-category').value,
-                    description: document.getElementById('admin-prod-desc').value.trim(),
-                    images: images, sizes: sizes, colors: colors
+                    id: id, name: document.getElementById('admin-prod-name').value.trim(), category: document.getElementById('admin-prod-category').value,
+                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors
                 };
 
-                if (isFirebaseActive && currentUser) {
-                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
-                    await setDoc(doc(colRef, id), productData);
-                } else {
-                    const existingIdx = PRODUCTS.findIndex(p => p.id === id);
-                    if(existingIdx >= 0) PRODUCTS[existingIdx] = productData;
-                    else PRODUCTS.push(productData);
-                    renderProducts(); renderAdminProducts();
-                }
+                const colRef = collection(db, 'products');
+                await setDoc(doc(colRef, id), productData);
                 window.closeProductModal();
-            } catch(error) {
-                console.error("Erro ao guardar:", error);
-                alert("Erro ao guardar. Verifique o formato (Nome|Valor).");
-            } finally {
-                btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar Produto`;
-                btn.disabled = false; lucide.createIcons();
-            }
+            } catch(error) { console.error(error); alert("Erro ao guardar. Verifique o formato (Nome|Valor)."); } 
+            finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar Produto`; btn.disabled = false; lucide.createIcons(); }
         };
 
         window.deleteProduct = async (id) => {
             if(confirm("Deseja eliminar esta peça? Ação irreversível.")) {
-                if (isFirebaseActive && currentUser) {
-                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                if (isFirebaseActive) {
+                    const colRef = collection(db, 'products');
                     await deleteDoc(doc(colRef, id));
-                } else {
-                    PRODUCTS = PRODUCTS.filter(p => p.id !== id);
-                    renderProducts(); renderAdminProducts();
-                }
+                } else alert("Configure o Firebase para deletar dados.");
             }
         };
 
-        // ==========================================
-        // LÓGICA DA CALCULADORA DE PRECIFICAÇÃO
-        // ==========================================
+        // Calculadora
         window.calculatePrice = () => {
-            const material = parseFloat(document.getElementById('calc-material').value) || 0;
-            const hours = parseFloat(document.getElementById('calc-hours').value) || 0;
-            const hourRate = parseFloat(document.getElementById('calc-hour-rate').value) || 0;
-            const fees = parseFloat(document.getElementById('calc-fees').value) || 0;
-            const profitMargin = parseFloat(document.getElementById('calc-profit').value) || 0;
-
-            const laborCost = hours * hourRate;
-            const productionCost = material + laborCost + fees;
-            
-            // Cálculo do Lucro por cima do custo de produção (Markup)
-            const profitValue = productionCost * (profitMargin / 100);
-            const totalSuggested = productionCost + profitValue;
-
-            document.getElementById('calc-res-labor').innerText = `R$ ${formatPrice(laborCost)}`;
-            document.getElementById('calc-res-cost').innerText = `R$ ${formatPrice(productionCost)}`;
-            document.getElementById('calc-res-profit').innerText = `R$ ${formatPrice(profitValue)}`;
-            document.getElementById('calc-res-total').innerText = `R$ ${formatPrice(totalSuggested)}`;
+            const mat = parseFloat(document.getElementById('calc-material').value) || 0; const hrs = parseFloat(document.getElementById('calc-hours').value) || 0;
+            const rate = parseFloat(document.getElementById('calc-hour-rate').value) || 0; const fees = parseFloat(document.getElementById('calc-fees').value) || 0;
+            const prof = parseFloat(document.getElementById('calc-profit').value) || 0;
+            const lab = hrs * rate; const cost = mat + lab + fees; const profVal = cost * (prof / 100); const tot = cost + profVal;
+            document.getElementById('calc-res-labor').innerText = `R$ ${formatPrice(lab)}`; document.getElementById('calc-res-cost').innerText = `R$ ${formatPrice(cost)}`;
+            document.getElementById('calc-res-profit').innerText = `R$ ${formatPrice(profVal)}`; document.getElementById('calc-res-total').innerText = `R$ ${formatPrice(tot)}`;
         };
-
-        window.resetCalculator = () => {
-            document.getElementById('calc-material').value = 0;
-            document.getElementById('calc-hours').value = 0;
-            document.getElementById('calc-fees').value = 0;
-            document.getElementById('calc-hour-rate').value = 15;
-            document.getElementById('calc-profit').value = 30;
-            window.calculatePrice();
-        };
-
-        // Form Utils
-        window.updateFileName = (input) => {
-            const display = document.getElementById('file-name-display');
-            if (input.files && input.files.length > 0) {
-                display.innerText = "Ficheiro selecionado: " + input.files[0].name;
-                display.classList.add('text-brand-gold', 'font-bold');
-            }
-        };
-        window.submitCustomQuote = (e) => { /* Netlify nativo */ };
+        window.resetCalculator = () => { ['calc-material','calc-hours','calc-fees'].forEach(id => document.getElementById(id).value = 0); document.getElementById('calc-hour-rate').value = 15; document.getElementById('calc-profit').value = 30; window.calculatePrice(); };
 
         initApp();
     </script>
