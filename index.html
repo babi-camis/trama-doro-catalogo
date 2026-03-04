@@ -649,7 +649,6 @@
                 if(isAdminAuthed) {
                     renderAdminInventory();
                     populatePieceMaterialSelect();
-                    // Atualizar opções de cores no modal de produto se estiver aberto
                     if (!document.getElementById('product-modal').classList.contains('hidden')) {
                          const currentSelectedIds = Array.from(document.querySelectorAll('.prod-color-checkbox:checked')).map(cb => cb.value);
                          window.updateProductColorOptions(currentSelectedIds);
@@ -819,7 +818,6 @@
             document.getElementById('admin-prod-id').value = '';
             const title = document.getElementById('modal-title');
             
-            // Popula os modelos de fios disponíveis (nomes únicos onde tipo = Linha)
             const threadNames = [...new Set(INVENTORY.filter(i => i.type === 'Linha').map(i => i.name))];
             const baseThreadSelect = document.getElementById('admin-prod-base-thread');
             baseThreadSelect.innerHTML = '<option value="">Nenhum / Não aplicável</option>';
@@ -838,7 +836,6 @@
                     if(p.images) document.getElementById('admin-prod-images').value = p.images.join(', ');
                     if(p.sizes) document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
                     
-                    // Preenche o fio base e as cores salvas
                     baseThreadSelect.value = p.baseThread || "";
                     window.updateProductColorOptions(p.inventoryColorIds || []);
                 }
@@ -894,7 +891,6 @@
                 const sizes = document.getElementById('admin-prod-sizes').value.split(',').map(s => { const [l, p] = s.split('|'); return (l && p) ? { label: l.trim(), price: parseFloat(p.trim()) } : null; }).filter(Boolean);
                 const images = document.getElementById('admin-prod-images').value.split(',').map(i => i.trim()).filter(Boolean);
                 
-                // Mapeia os fios selecionados para construir as cores da bolsa
                 const baseThread = document.getElementById('admin-prod-base-thread').value;
                 const colorCheckboxes = Array.from(document.querySelectorAll('.prod-color-checkbox:checked'));
                 const inventoryColorIds = colorCheckboxes.map(cb => cb.value);
