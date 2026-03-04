@@ -229,11 +229,11 @@
 
         <div class="flex gap-4 md:gap-8 mb-8 border-b border-stone-200 overflow-x-auto no-scrollbar">
             <button onclick="window.switchAdminTab('products')" id="tab-products" class="text-brand-gold font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all whitespace-nowrap">Catálogo</button>
-            <button onclick="window.switchAdminTab('inventory')" id="tab-inventory" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Estoque</button>
-            <button onclick="window.switchAdminTab('calculator')" id="tab-calculator" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Calculadora</button>
+            <button onclick="window.switchAdminTab('inventory')" id="tab-inventory" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Estoque Mestre</button>
+            <button onclick="window.switchAdminTab('production')" id="tab-production" class="text-stone-400 hover:text-stone-900 font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-transparent -mb-[2px] transition-all whitespace-nowrap">Ficha Técnica & Produção</button>
         </div>
 
-        <!-- ABA 1: PRODUTOS -->
+        <!-- ABA 1: PRODUTOS (Catálogo) -->
         <div id="admin-products-section" class="block">
             <div class="flex justify-end mb-4">
                 <button onclick="window.openProductModal()" class="flex items-center gap-2 bg-brand-gold text-stone-900 px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-900 hover:text-white transition-all shadow-lg">
@@ -256,103 +256,191 @@
             </div>
         </div>
 
-        <!-- ABA 2: ESTOQUE (NOVO) -->
+        <!-- ABA 2: ESTOQUE MESTRE -->
         <div id="admin-inventory-section" class="hidden">
-            <div class="flex justify-end mb-4">
-                <button onclick="window.openInventoryModal()" class="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-all shadow-lg">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Novo Material
-                </button>
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100 mb-8 relative" id="inventoryFormContainer">
+                <div id="editBadge" class="hidden absolute top-4 right-4 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                    Modo de Edição
+                </div>
+                <h3 class="text-xl font-serif font-bold text-stone-900 mb-6 border-b border-stone-100 pb-4">Cadastrar Material</h3>
+                
+                <form id="admin-inventory-form" onsubmit="window.saveInventory(event)" class="space-y-6">
+                    <input type="hidden" id="admin-inv-id">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome do Material *</label>
+                            <input type="text" id="matName" required placeholder="Ex: Fio de Malha Premium" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Fornecedor</label>
+                            <input type="text" id="matSupplier" placeholder="Ex: Armarinho São José" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">SKU / Código</label>
+                            <input type="text" id="matSku" placeholder="Ex: FMP-001" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cor (Nome ou HEX)</label>
+                            <input type="text" id="matColor" placeholder="Ex: Azul Marinho ou #000080" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor Total Pago (R$) *</label>
+                            <input type="number" id="matPrice" required min="0" step="0.01" placeholder="0.00" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Qtd em Estoque *</label>
+                            <input type="number" id="matQty" required min="0" step="0.01" placeholder="0" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Unidade *</label>
+                            <select id="matUnit" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <option value="g">Gramas (g)</option>
+                                <option value="kg">Quilos (kg)</option>
+                                <option value="m">Metros (m)</option>
+                                <option value="un">Unidades (un)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex gap-4">
+                        <button type="submit" id="btnSaveMaterial" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Salvar Material
+                        </button>
+                        <button type="button" id="btnCancelEdit" onclick="window.cancelEditMaterial()" class="hidden bg-stone-200 text-stone-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-300 transition-colors">
+                            Cancelar Edição
+                        </button>
+                    </div>
+                </form>
             </div>
+
             <div class="bg-white rounded-[2rem] border border-stone-100 overflow-hidden shadow-xl">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-stone-50 text-stone-500 uppercase tracking-widest text-[10px]">
-                            <tr>
-                                <th class="px-6 py-4 font-bold">Material</th>
-                                <th class="px-6 py-4 font-bold">Tipo</th>
-                                <th class="px-6 py-4 font-bold">Estoque</th>
-                                <th class="px-6 py-4 font-bold">Custo</th>
-                                <th class="px-6 py-4 font-bold text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-inventory-list" class="divide-y divide-stone-100"></tbody>
-                    </table>
+                <div class="p-6 border-b border-stone-100 bg-stone-50">
+                    <h3 class="font-serif font-bold text-stone-900">Itens em Estoque</h3>
+                </div>
+                <div class="overflow-x-auto p-4">
+                    <ul id="materialList" class="space-y-3">
+                        <!-- Renderizado via JS -->
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- ABA 3: CALCULADORA -->
-        <div id="admin-calculator-section" class="hidden bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100 text-stone-900">
-            <div class="flex items-center gap-3 mb-8">
-                <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
-                    <i data-lucide="calculator" class="w-5 h-5 text-brand-gold"></i>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-serif font-bold">Calculadora Inteligente</h3>
-                    <p class="text-stone-500 text-sm">Calcule o preço exato para os seus orçamentos.</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Custo de Materiais (R$)</label>
-                        <input type="number" id="calc-material" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Horas (h)</label>
-                            <input type="number" id="calc-hours" value="0" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor Hora (R$)</label>
-                            <input type="number" id="calc-hour-rate" value="15" min="0" step="0.5" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Taxas Extras (R$)</label>
-                            <input type="number" id="calc-fees" value="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Margem Lucro (%)</label>
-                            <input type="number" id="calc-profit" value="30" min="0" step="1" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all" oninput="window.calculatePrice()">
-                        </div>
-                    </div>
-                    <button onclick="window.resetCalculator()" class="text-xs font-bold text-stone-400 uppercase tracking-widest hover:text-stone-900 transition-colors flex items-center gap-2">
-                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Limpar Calculadora
-                    </button>
-                </div>
+        <!-- ABA 3: FICHA TÉCNICA E PRODUÇÃO -->
+        <div id="admin-production-section" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
-                <div class="bg-stone-900 text-white rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-2xl">
-                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-gold rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
-                    <div class="grid grid-cols-2 gap-6 mb-8 relative z-10">
-                        <div><p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Mão de Obra</p><p class="text-xl font-serif" id="calc-res-labor">R$ 0,00</p></div>
-                        <div><p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1">Custo Produção</p><p class="text-xl font-serif" id="calc-res-cost">R$ 0,00</p></div>
+                <div class="space-y-8">
+                    <!-- Custos Base -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100">
+                        <h3 class="text-xl font-serif font-bold text-stone-900 mb-6 border-b border-stone-100 pb-4">1. Seus Custos Base</h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Valor da Hora (R$) *</label>
+                                <input type="number" id="hourlyRate" placeholder="Ex: 15.00" step="0.5" min="0" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Margem de Lucro (%) *</label>
+                                <input type="number" id="profitMargin" placeholder="Ex: 30" step="1" min="0" max="100" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-8 relative z-10">
-                        <p class="text-[10px] text-stone-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Lucro Líquido</p>
-                        <p class="text-2xl font-serif text-emerald-400" id="calc-res-profit">R$ 0,00</p>
-                    </div>
-                    <div class="border-t border-stone-700 pt-6 mt-auto relative z-10">
-                        <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-2">Preço Sugerido</p>
-                        <p class="text-5xl md:text-6xl font-serif" id="calc-res-total">R$ 0,00</p>
+
+                    <!-- Ficha Técnica -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-stone-100">
+                        <h3 class="text-xl font-serif font-bold text-stone-900 mb-6 border-b border-stone-100 pb-4">2. Ficha Técnica da Peça</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Material Utilizado (Do Estoque)</label>
+                                <select id="pieceMaterial" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                                    <option value="">Carregando estoque...</option>
+                                </select>
+                            </div>
+                            <div class="flex gap-4 items-end">
+                                <div class="flex-grow">
+                                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Quantidade Gasta</label>
+                                    <div class="flex items-center gap-3">
+                                        <input type="number" id="pieceQtyUsed" placeholder="0" min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all">
+                                        <span id="unitDisplay" class="font-bold text-stone-400 w-8">-</span>
+                                    </div>
+                                </div>
+                                <button onclick="window.addMaterialToPiece()" class="bg-stone-900 hover:bg-brand-gold text-white px-6 py-3 rounded-xl font-bold text-sm transition-all h-[46px] whitespace-nowrap">
+                                    + Adicionar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone-50 rounded-xl p-4 border border-stone-100 min-h-[100px]">
+                            <ul id="usedMaterialsList" class="space-y-2 text-sm">
+                                <li class="text-stone-400 italic text-center py-4">Nenhum material lançado na peça.</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-8 border-t border-stone-100 pt-6">
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tempo Total de Confecção (Horas) *</label>
+                            <input type="number" id="pieceHours" placeholder="Ex: 2.5" step="0.1" min="0" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand-gold/50 transition-all mb-6">
+                            
+                            <button onclick="window.calculatePiecePrice()" class="w-full bg-brand-gold text-stone-900 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-stone-900 hover:text-white transition-all">
+                                Calcular Precificação
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Resultados da Produção -->
+                <div>
+                    <div id="production-result" class="hidden bg-stone-900 text-white rounded-[2rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-2xl h-full animate-in fade-in duration-500 sticky top-28">
+                        <div class="absolute -right-10 -top-10 w-64 h-64 bg-brand-gold rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+                        
+                        <h3 class="text-2xl font-serif font-bold text-brand-gold mb-8 text-center border-b border-stone-800 pb-4 relative z-10">Análise de Custos</h3>
+                        
+                        <div class="space-y-6 relative z-10 flex-grow">
+                            <div class="flex justify-between items-center pb-4 border-b border-stone-800 border-dashed">
+                                <span class="text-stone-400 text-sm">Custo Fracionado (Materiais)</span>
+                                <span class="text-lg font-bold">R$ <span id="resMaterials">0,00</span></span>
+                            </div>
+                            <div class="flex justify-between items-center pb-4 border-b border-stone-800 border-dashed">
+                                <span class="text-stone-400 text-sm">Mão de Obra (Tempo)</span>
+                                <span class="text-lg font-bold">R$ <span id="resLabor">0,00</span></span>
+                            </div>
+                            <div class="flex justify-between items-center pb-4 border-b border-stone-800">
+                                <span class="text-stone-300 font-bold">Custo de Produção Total</span>
+                                <span class="text-xl font-bold text-stone-100">R$ <span id="resTotalCost">0,00</span></span>
+                            </div>
+                            
+                            <div class="pt-6 mt-auto">
+                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-2">Preço Final Sugerido</p>
+                                <p class="text-5xl md:text-6xl font-serif text-white mb-8">R$ <span id="resFinalPrice">0,00</span></p>
+                                
+                                <button id="btnFinalizePiece" onclick="window.finalizePieceAndDeductStock()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                                    <i data-lucide="check-circle" class="w-5 h-5"></i> Finalizar e Baixar Estoque
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <!-- MODAL PRODUTO -->
+    <!-- MODAL PRODUTO (CATÁLOGO) -->
     <div id="product-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
         <div class="bg-white rounded-[2rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-stone-100 px-8 py-6 flex items-center justify-between z-10">
-                <h3 class="text-2xl font-serif font-bold text-stone-900" id="modal-title">Adicionar Produto</h3>
+                <h3 class="text-2xl font-serif font-bold text-stone-900" id="modal-title">Adicionar Peça ao Catálogo</h3>
                 <button onclick="window.closeProductModal()" class="p-2 hover:bg-stone-100 rounded-full transition-colors"><i data-lucide="x"></i></button>
             </div>
             
             <div class="p-8">
-                <form id="admin-product-form" onsubmit="window.saveProduct(event)" class="space-y-6">
+                <form id="admin-product-form" onsubmit="window.saveCatalogProduct(event)" class="space-y-6">
                     <input type="hidden" id="admin-prod-id">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -393,19 +481,10 @@
                         </div>
                     </div>
 
-                    <!-- LINHAS VINCULADAS -->
-                    <div class="p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/20">
-                        <label class="block text-[10px] font-bold text-stone-900 uppercase tracking-widest mb-3">Linhas Compatíveis (Estoque)</label>
-                        <div id="admin-prod-lines-container" class="grid grid-cols-2 gap-3 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
-                            <!-- Gerado por JS baseado no estoque -->
-                        </div>
-                        <p class="text-[10px] text-stone-500 mt-3 italic">Marque as linhas/fios do seu estoque que podem ser utilizados na confecção desta peça.</p>
-                    </div>
-
                     <div class="pt-4 flex justify-end gap-4">
                         <button type="button" onclick="window.closeProductModal()" class="px-6 py-3 rounded-xl font-bold text-sm text-stone-500 hover:bg-stone-100 transition-colors">Cancelar</button>
-                        <button type="submit" id="admin-save-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
-                            <i data-lucide="save" class="w-4 h-4"></i> Guardar Produto
+                        <button type="submit" id="admin-save-prod-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Salvar no Catálogo
                         </button>
                     </div>
                 </form>
@@ -413,65 +492,9 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DE ESTOQUE -->
-    <div id="inventory-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
-        <div class="bg-white rounded-[2rem] w-full max-w-lg shadow-2xl relative">
-            <div class="border-b border-stone-100 px-8 py-6 flex items-center justify-between">
-                <h3 class="text-2xl font-serif font-bold text-stone-900" id="inv-modal-title">Adicionar Material</h3>
-                <button onclick="window.closeInventoryModal()" class="p-2 hover:bg-stone-100 rounded-full transition-colors"><i data-lucide="x"></i></button>
-            </div>
-            
-            <div class="p-8">
-                <form id="admin-inventory-form" onsubmit="window.saveInventory(event)" class="space-y-6">
-                    <input type="hidden" id="admin-inv-id">
-                    
-                    <div>
-                        <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome do Material</label>
-                        <input type="text" id="admin-inv-name" required placeholder="Ex: Fio Náutico 3mm Azul" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tipo</label>
-                            <select id="admin-inv-type" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
-                                <option value="Linha">Linha / Fio</option>
-                                <option value="Argola">Argola</option>
-                                <option value="Zíper">Zíper</option>
-                                <option value="Fecho">Fecho / Ímã</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Unidade</label>
-                            <select id="admin-inv-unit" required class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
-                                <option value="Rolos">Rolos</option>
-                                <option value="Metros">Metros</option>
-                                <option value="Unidades">Unidades</option>
-                                <option value="Gramas">Gramas</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Qtd em Estoque</label>
-                            <input type="number" id="admin-inv-qty" required min="0" step="0.1" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Custo Unitário (R$)</label>
-                            <input type="number" id="admin-inv-cost" required min="0" step="0.01" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
-                        </div>
-                    </div>
-
-                    <div class="pt-4 flex justify-end gap-4 border-t border-stone-100">
-                        <button type="button" onclick="window.closeInventoryModal()" class="px-6 py-3 rounded-xl font-bold text-sm text-stone-500 hover:bg-stone-100 transition-colors">Cancelar</button>
-                        <button type="submit" id="admin-inv-save-btn" class="bg-stone-900 text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-brand-gold transition-colors flex items-center gap-2">
-                            <i data-lucide="save" class="w-4 h-4"></i> Guardar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-stone-900 text-white px-6 py-4 rounded-xl shadow-2xl opacity-0 pointer-events-none transition-opacity z-[100] font-bold text-sm flex items-center gap-3">
+        <span id="toast-msg">Mensagem</span>
     </div>
 
     <!-- Rodapé -->
@@ -487,9 +510,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // As suas chaves inseridas anteriormente
         const firebaseConfig = {
             apiKey: "AIzaSyBRVom5cIw-zX1IU_Kd-MF9g_G2UU66jWE",
             authDomain: "trama-d-oro.firebaseapp.com",
@@ -498,63 +521,113 @@
             messagingSenderId: "155379558174",
             appId: "1:155379558174:web:072f3c4c9f37855f754b0f"
         };
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'trama-doro-app';
 
         const BRAND = { whatsapp: "5543998579615", currency: "R$", categories: ["Todos", "Vestuário", "Moda Praia", "Acessórios"] };
         
-        let app, db;
+        let app, db, auth, currentUser;
         let isFirebaseActive = false;
+        let dataListening = false;
         let PRODUCTS = [];
         let INVENTORY = [];
         let productStates = {};
+        let pieceMaterials = []; 
+        let editingMaterialId = null;
+        
         let currentCategory = "Todos";
         let currentSearch = "";
         let mobileMenuOpen = false;
         let isAdminAuthed = false;
 
-        // Dados base para o sistema não quebrar vazio
-        const DEFAULT_PRODUCTS = [{ id: "1", name: "Bolsa Base", category: "Acessórios", description: "Bolsa de segurança.", images: [], colors: [], sizes: [{ label: "Único", price: 50.00 }], allowedLines: [] }];
+        const DEFAULT_PRODUCTS = [
+            {
+                id: "1", name: "Bolsa Transversal Pequena", category: "Acessórios",
+                description: "Bolsa transversal com cerca de 30cm, feita em fio náutico de 3mm.",
+                images: ["assets/20260203_192522.jpg"],
+                colors: [{ name: "Azul Náutico", hex: "#1D3557" }], sizes: [{ label: "Único", price: 50.00 }]
+            }
+        ];
 
-        function initApp() {
-            if(!firebaseConfig.projectId) return fallBackLoad();
+        window.showToast = (msg, isError = false) => {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.style.borderLeft = isError ? '4px solid #ef4444' : '4px solid #10b981';
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 3000);
+        };
+
+        const formatPrice = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        async function initApp() {
             try {
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 isFirebaseActive = true;
-                listenToData();
+                
+                try {
+                    auth = getAuth(app);
+                    // Faz o login anônimo direto no projeto da Trama d'Oro, sem utilizar tokens de ambiente
+                    await signInAnonymously(auth);
+                    
+                    onAuthStateChanged(auth, (user) => {
+                        currentUser = user || { uid: 'anonymous' };
+                        if(!dataListening) {
+                            dataListening = true;
+                            listenToData();
+                        }
+                    });
+                } catch (authErr) {
+                    console.warn("Autenticação não ativada. Prosseguindo leitura do banco com regras abertas...", authErr);
+                    currentUser = { uid: 'anonymous' };
+                    if(!dataListening) {
+                        dataListening = true;
+                        listenToData();
+                    }
+                }
             } catch(e) {
-                document.getElementById('loading-text').innerText = "Erro na conexão.";
-                fallBackLoad();
+                console.error("Erro na conexão principal do Firebase", e);
+                PRODUCTS = [...DEFAULT_PRODUCTS];
+                finishLoading();
             }
         }
 
-        let productsLoaded = false;
-        let inventoryLoaded = false;
+        let prodsLoaded = false, invLoaded = false;
 
         function listenToData() {
-            onSnapshot(collection(db, 'products'), (snapshot) => {
-                PRODUCTS = [];
-                snapshot.forEach(docSnap => PRODUCTS.push({ id: docSnap.id, ...docSnap.data() }));
-                if(PRODUCTS.length === 0) PRODUCTS = [...DEFAULT_PRODUCTS]; // Evitar tela branca se banco limpo
-                productsLoaded = true;
-                checkFullLoad();
-            }, (err) => fallBackLoad(err));
+            if (!currentUser) return;
+            
+            const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+            const inventoryRef = collection(db, 'artifacts', appId, 'public', 'data', 'inventory');
 
-            onSnapshot(collection(db, 'inventory'), (snapshot) => {
+            onSnapshot(productsRef, (snapshot) => {
+                if (snapshot.empty && PRODUCTS.length === 0) {
+                    DEFAULT_PRODUCTS.forEach(async (p) => await setDoc(doc(productsRef, p.id), p));
+                } else {
+                    PRODUCTS = [];
+                    snapshot.forEach(docSnap => PRODUCTS.push({ id: docSnap.id, ...docSnap.data() }));
+                    prodsLoaded = true; checkLoad();
+                }
+            }, () => { PRODUCTS = [...DEFAULT_PRODUCTS]; prodsLoaded = true; checkLoad(); });
+
+            onSnapshot(inventoryRef, (snapshot) => {
                 INVENTORY = [];
                 snapshot.forEach(docSnap => INVENTORY.push({ id: docSnap.id, ...docSnap.data() }));
-                inventoryLoaded = true;
-                checkFullLoad();
-            }, (err) => console.error("Erro Inventário", err));
+                INVENTORY.sort((a, b) => a.name.localeCompare(b.name));
+                invLoaded = true; checkLoad();
+                
+                if(isAdminAuthed) {
+                    renderAdminInventory();
+                    populatePieceMaterialSelect();
+                    if(pieceMaterials.length > 0 && document.getElementById('production-result').style.display === 'flex') {
+                        recalculatePieceCosts();
+                    }
+                }
+            });
         }
 
-        function checkFullLoad() {
-            if(productsLoaded && inventoryLoaded) finishLoading();
-        }
-
-        function fallBackLoad(err = null) {
-            if(err) console.error("Firebase Rules Error", err);
-            PRODUCTS = [...DEFAULT_PRODUCTS];
-            finishLoading();
+        function checkLoad() {
+            if(prodsLoaded && invLoaded) finishLoading();
         }
 
         function finishLoading() {
@@ -562,12 +635,13 @@
             document.getElementById('app-loading').classList.add('hidden');
             document.getElementById('body-content').classList.remove('js-loading');
             document.getElementById('body-content').classList.add('js-loaded');
-            
             window.switchView('catalog');
-            
-            renderCategories(); renderProducts(); renderAdminProducts(); renderAdminInventory(); lucide.createIcons();
+            renderCategories(); renderProducts(); lucide.createIcons();
         }
 
+        // ==========================================
+        // UI & NAVEGAÇÃO
+        // ==========================================
         window.switchView = (viewName) => {
             const views = ['catalog-view', 'quote-view', 'admin-login-view', 'admin-dashboard-view'];
             views.forEach(v => { document.getElementById(v).classList.add('hidden'); document.getElementById(v).classList.remove('block'); });
@@ -608,12 +682,10 @@
             renderProducts();
         };
 
-        const formatPrice = (v) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
         function renderProducts() {
             const grid = document.getElementById('products-grid'); const empty = document.getElementById('empty-state');
             grid.innerHTML = '';
-            const filtered = PRODUCTS.filter(p => (currentCategory === "Todos" || p.category === currentCategory) && (p.name.toLowerCase().includes(currentSearch.toLowerCase()) || p.description.toLowerCase().includes(currentSearch.toLowerCase())));
+            const filtered = PRODUCTS.filter(p => (currentCategory === "Todos" || p.category === currentCategory) && (p.name.toLowerCase().includes(currentSearch.toLowerCase()) || (p.description && p.description.toLowerCase().includes(currentSearch.toLowerCase()))));
             if (filtered.length === 0) { grid.classList.add('hidden'); empty.classList.remove('hidden'); return; }
             grid.classList.remove('hidden'); empty.classList.add('hidden');
 
@@ -655,30 +727,29 @@
 
         window.sendOrder = (pId) => {
             const p = PRODUCTS.find(x => x.id === pId); const state = productStates[pId];
-            const size = p.sizes[state.sizeIdx] || p.sizes[0]; const color = p.colors[state.colorIdx] || p.colors[0];
+            const size = p.sizes && p.sizes.length ? p.sizes[state.sizeIdx] : null; 
+            const color = p.colors && p.colors.length ? p.colors[state.colorIdx] : null;
             let text = `*TRAMA D'ORO - PEDIDO*\n\nOlá! Gostaria de encomendar:\n*Peça:* ${p.name}\n`;
             if(size) text += `*Tamanho:* ${size.label}\n*Valor:* ${BRAND.currency} ${formatPrice(size.price)}\n`;
             if(color) text += `*Cor:* ${color.name}\n`;
-            
-            // Adicionar linhas sugeridas se houver
-            if(p.allowedLines && p.allowedLines.length > 0) {
-                const linhasSugeridas = INVENTORY.filter(inv => p.allowedLines.includes(inv.id)).map(l => l.name).join(', ');
-                if(linhasSugeridas) text += `\n_Vi que esta peça pode ser feita em: ${linhasSugeridas}_`;
-            }
-            
             window.open(`https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        // ADMIN
+        // ==========================================
+        // ADMIN CORE
+        // ==========================================
         window.verifyAdmin = () => {
             if(document.getElementById('admin-pin').value === 'trama2026') { 
-                isAdminAuthed = true; document.getElementById('admin-pin').value = ''; window.switchView('admin-dashboard'); 
-                renderAdminProducts(); renderAdminInventory();
-            } else alert("Palavra-passe incorreta.");
+                isAdminAuthed = true; document.getElementById('admin-pin').value = ''; 
+                window.switchView('admin-dashboard'); 
+                renderAdminProducts(); 
+                renderAdminInventory();
+                populatePieceMaterialSelect();
+            } else window.showToast("Palavra-passe incorreta.", true);
         };
 
         window.switchAdminTab = (tab) => {
-            const tabs = ['products', 'inventory', 'calculator'];
+            const tabs = ['products', 'inventory', 'production'];
             tabs.forEach(t => {
                 document.getElementById(`tab-${t}`).className = t === tab 
                     ? "text-brand-gold font-bold uppercase tracking-widest text-[10px] md:text-xs pb-4 border-b-2 border-brand-gold -mb-[2px] transition-all whitespace-nowrap"
@@ -689,16 +760,15 @@
             });
         };
 
-        // ====== CRUD PRODUTOS ======
+        // ====== CRUD PRODUTOS (CATÁLOGO) ======
         function renderAdminProducts() {
             const tbody = document.getElementById('admin-products-list'); tbody.innerHTML = '';
             if(PRODUCTS.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-stone-400 italic">Catálogo vazio.</td></tr>`; return; }
             PRODUCTS.forEach(p => {
                 const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://via.placeholder.com/150'; 
-                const price = (p.sizes && p.sizes.length > 0) ? formatPrice(p.sizes[0].price) : '0,00';
                 tbody.innerHTML += `
                     <tr class="hover:bg-stone-50 transition-colors">
-                        <td class="px-6 py-4"><img src="${img}" class="w-12 h-12 rounded-lg object-cover bg-stone-200"></td>
+                        <td class="px-6 py-4"><img src="${img}" class="w-12 h-12 rounded-xl object-cover bg-stone-200"></td>
                         <td class="px-6 py-4"><p class="font-bold text-stone-900">${p.name}</p><p class="text-[10px] uppercase tracking-widest text-stone-400">${p.category}</p></td>
                         <td class="px-6 py-4 text-right">
                             <button onclick="window.openProductModal('${p.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
@@ -713,24 +783,6 @@
             document.getElementById('admin-product-form').reset();
             document.getElementById('admin-prod-id').value = '';
             const title = document.getElementById('modal-title');
-            
-            // Gerar Checkboxes de Linhas do Estoque
-            const linesContainer = document.getElementById('admin-prod-lines-container');
-            linesContainer.innerHTML = '';
-            const linhas = INVENTORY.filter(item => item.type === 'Linha');
-            
-            if(linhas.length === 0) {
-                linesContainer.innerHTML = `<p class="text-xs text-stone-400 italic col-span-2">Nenhuma linha cadastrada no estoque.</p>`;
-            } else {
-                linhas.forEach(linha => {
-                    linesContainer.innerHTML += `
-                        <label class="flex items-center gap-2 text-xs text-stone-700 cursor-pointer">
-                            <input type="checkbox" value="${linha.id}" class="linha-checkbox form-checkbox h-4 w-4 text-brand-gold rounded border-stone-300">
-                            <span class="truncate">${linha.name}</span>
-                        </label>
-                    `;
-                });
-            }
 
             if (id) {
                 title.innerText = "Editar Peça"; const p = PRODUCTS.find(x => x.id === id);
@@ -740,12 +792,6 @@
                     if(p.images) document.getElementById('admin-prod-images').value = p.images.join(', ');
                     if(p.sizes) document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
                     if(p.colors) document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
-                    
-                    // Marcar checkboxes salvos
-                    if(p.allowedLines) {
-                        const checkboxes = document.querySelectorAll('.linha-checkbox');
-                        checkboxes.forEach(cb => { if(p.allowedLines.includes(cb.value)) cb.checked = true; });
-                    }
                 }
             } else { title.innerText = "Nova Peça"; }
             document.getElementById('product-modal').classList.remove('hidden');
@@ -753,11 +799,11 @@
 
         window.closeProductModal = () => document.getElementById('product-modal').classList.add('hidden');
 
-        window.saveProduct = async (e) => {
+        window.saveCatalogProduct = async (e) => {
             e.preventDefault();
-            if (!isFirebaseActive) { alert("Sem acesso ao banco de dados."); return; }
-            const btn = document.getElementById('admin-save-btn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> A guardar...`; btn.disabled = true; lucide.createIcons();
+            if (!currentUser) return window.showToast("Sem acesso ao banco.", true);
+            const btn = document.getElementById('admin-save-prod-btn');
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Salvando...`; btn.disabled = true; lucide.createIcons();
 
             try {
                 const id = document.getElementById('admin-prod-id').value || Date.now().toString();
@@ -765,104 +811,279 @@
                 const colors = document.getElementById('admin-prod-colors').value.split(',').map(c => { const [n, h] = c.split('|'); return (n && h) ? { name: n.trim(), hex: h.trim() } : null; }).filter(Boolean);
                 const images = document.getElementById('admin-prod-images').value.split(',').map(i => i.trim()).filter(Boolean);
                 
-                // Pegar linhas selecionadas
-                const allowedLines = Array.from(document.querySelectorAll('.linha-checkbox:checked')).map(cb => cb.value);
-
                 const productData = {
                     id: id, name: document.getElementById('admin-prod-name').value.trim(), category: document.getElementById('admin-prod-category').value,
-                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors, allowedLines: allowedLines
+                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors
                 };
 
-                await setDoc(doc(collection(db, 'products'), id), productData);
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                await setDoc(doc(colRef, id), productData);
+                window.showToast("Produto salvo no catálogo!");
                 window.closeProductModal();
-            } catch(error) { console.error(error); alert("Erro ao guardar. Verifique o formato."); } 
-            finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar Produto`; btn.disabled = false; lucide.createIcons(); }
+            } catch(error) { console.error(error); window.showToast("Erro ao salvar produto.", true); } 
+            finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Salvar no Catálogo`; btn.disabled = false; lucide.createIcons(); }
         };
 
         window.deleteProduct = async (id) => {
-            if(confirm("Deseja eliminar esta peça?")) {
-                if (isFirebaseActive) await deleteDoc(doc(collection(db, 'products'), id));
+            if(confirm("Deseja eliminar esta peça do catálogo?")) {
+                if (currentUser) {
+                    await deleteDoc(doc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), id));
+                    window.showToast("Produto removido.");
+                }
             }
         };
 
-        // ====== CRUD ESTOQUE ======
+        // ====== CRUD ESTOQUE MESTRE ======
         function renderAdminInventory() {
-            const tbody = document.getElementById('admin-inventory-list'); tbody.innerHTML = '';
-            if(INVENTORY.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-stone-400 italic">Estoque vazio.</td></tr>`; return; }
-            INVENTORY.forEach(i => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-stone-50 transition-colors">
-                        <td class="px-6 py-4 font-bold text-stone-900">${i.name}</td>
-                        <td class="px-6 py-4 text-xs text-stone-500">${i.type}</td>
-                        <td class="px-6 py-4 font-serif text-lg">${i.quantity} <span class="text-xs text-stone-400">${i.unit}</span></td>
-                        <td class="px-6 py-4 text-sm">${BRAND.currency} ${formatPrice(i.cost)}</td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="window.openInventoryModal('${i.id}')" class="p-2 text-stone-400 hover:text-brand-gold transition-colors mr-2"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                            <button onclick="window.deleteInventory('${i.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </td>
-                    </tr>`;
+            const list = document.getElementById('materialList'); list.innerHTML = '';
+            if (INVENTORY.length === 0) {
+                list.innerHTML = '<li class="text-stone-400 italic text-sm text-center py-4">Nenhum material cadastrado no estoque.</li>';
+                return;
+            }
+            INVENTORY.forEach(m => {
+                const extras = [];
+                if(m.sku) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">SKU: ${m.sku}</span>`);
+                if(m.color) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">Cor: ${m.color}</span>`);
+                if(m.supplier) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">Forn: ${m.supplier}</span>`);
+                const extrasHtml = extras.length > 0 ? `<div class="flex gap-2 mt-2">${extras.join('')}</div>` : '';
+                const stockAlert = m.originalQty <= 0 ? ' <span class="text-red-500 text-[10px] font-bold uppercase tracking-widest">(Esgotado)</span>' : '';
+
+                list.innerHTML += `
+                    <li class="bg-white border border-stone-200 p-4 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-brand-gold transition-colors">
+                        <div>
+                            <p class="font-bold text-stone-900">${m.name}${stockAlert}</p>
+                            <p class="text-xs text-stone-500 mt-1">Estoque: <span class="font-bold text-stone-700">${m.originalQty} ${m.originalUnit}</span> • Custo: R$ ${m.unitPrice.toFixed(4)}/${m.unit}</p>
+                            ${extrasHtml}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="window.editMaterial('${m.id}')" class="bg-stone-100 p-2 rounded-xl text-stone-600 hover:bg-brand-gold hover:text-stone-900 transition-colors"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="window.removeMaterial('${m.id}')" class="bg-stone-100 p-2 rounded-xl text-stone-600 hover:bg-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </li>
+                `;
             });
             lucide.createIcons();
         }
 
-        window.openInventoryModal = (id = null) => {
-            document.getElementById('admin-inventory-form').reset();
-            document.getElementById('admin-inv-id').value = '';
-            if (id) {
-                document.getElementById('inv-modal-title').innerText = "Editar Material";
-                const i = INVENTORY.find(x => x.id === id);
-                if(i) {
-                    document.getElementById('admin-inv-id').value = i.id;
-                    document.getElementById('admin-inv-name').value = i.name;
-                    document.getElementById('admin-inv-type').value = i.type;
-                    document.getElementById('admin-inv-unit').value = i.unit;
-                    document.getElementById('admin-inv-qty').value = i.quantity;
-                    document.getElementById('admin-inv-cost').value = i.cost;
-                }
-            } else { document.getElementById('inv-modal-title').innerText = "Novo Material"; }
-            document.getElementById('inventory-modal').classList.remove('hidden');
+        window.editMaterial = function(id) {
+            const m = INVENTORY.find(x => x.id === id);
+            if(!m) return;
+            document.getElementById('matName').value = m.name || '';
+            document.getElementById('matSupplier').value = m.supplier || '';
+            document.getElementById('matSku').value = m.sku || '';
+            document.getElementById('matColor').value = m.color || '';
+            document.getElementById('matPrice').value = m.price || '';
+            document.getElementById('matQty').value = m.originalQty || '';
+            document.getElementById('matUnit').value = m.originalUnit || 'g';
+            editingMaterialId = id;
+            
+            document.getElementById('inventoryFormContainer').classList.add('border-brand-gold');
+            document.getElementById('editBadge').classList.remove('hidden');
+            const btn = document.getElementById('btnSaveMaterial');
+            btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar Material`;
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            document.getElementById('inventoryFormContainer').scrollIntoView({ behavior: 'smooth' });
+            lucide.createIcons();
         };
 
-        window.closeInventoryModal = () => document.getElementById('inventory-modal').classList.add('hidden');
+        window.cancelEditMaterial = function() {
+            editingMaterialId = null;
+            document.getElementById('admin-inventory-form').reset();
+            document.getElementById('inventoryFormContainer').classList.remove('border-brand-gold');
+            document.getElementById('editBadge').classList.add('hidden');
+            const btn = document.getElementById('btnSaveMaterial');
+            btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Salvar Material`;
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+            lucide.createIcons();
+        };
 
         window.saveInventory = async (e) => {
             e.preventDefault();
-            if (!isFirebaseActive) { alert("Sem acesso ao banco."); return; }
-            const btn = document.getElementById('admin-inv-save-btn');
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...`; btn.disabled = true; lucide.createIcons();
+            if (!currentUser) return window.showToast("Sem acesso ao banco.", true);
+
+            const name = document.getElementById('matName').value.trim();
+            const sku = document.getElementById('matSku').value.trim();
+            const color = document.getElementById('matColor').value.trim();
+            const supplier = document.getElementById('matSupplier').value.trim();
+            const price = parseFloat(document.getElementById('matPrice').value);
+            const qty = parseFloat(document.getElementById('matQty').value);
+            const unit = document.getElementById('matUnit').value;
+
+            const btn = document.getElementById('btnSaveMaterial');
+            btn.disabled = true;
+
+            let finalQty = qty; let finalUnit = unit;
+            if (unit === 'kg') { finalQty = qty * 1000; finalUnit = 'g'; }
+            const unitPrice = finalQty > 0 ? price / finalQty : 0;
+            
+            const matData = { name, sku, color, supplier, price, qty: finalQty, unit: finalUnit, unitPrice, originalQty: qty, originalUnit: unit, updatedAt: Date.now() };
 
             try {
-                const id = document.getElementById('admin-inv-id').value || Date.now().toString();
-                const invData = {
-                    id: id,
-                    name: document.getElementById('admin-inv-name').value.trim(),
-                    type: document.getElementById('admin-inv-type').value,
-                    unit: document.getElementById('admin-inv-unit').value,
-                    quantity: parseFloat(document.getElementById('admin-inv-qty').value),
-                    cost: parseFloat(document.getElementById('admin-inv-cost').value)
-                };
-                await setDoc(doc(collection(db, 'inventory'), id), invData);
-                window.closeInventoryModal();
-            } catch(error) { console.error(error); alert("Erro ao guardar estoque."); } 
-            finally { btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Guardar`; btn.disabled = false; lucide.createIcons(); }
+                const coll = collection(db, 'artifacts', appId, 'public', 'data', 'inventory');
+                if (editingMaterialId) {
+                    await updateDoc(doc(coll, editingMaterialId), matData);
+                    window.showToast("Material atualizado!");
+                } else {
+                    matData.createdAt = Date.now();
+                    await addDoc(coll, matData);
+                    window.showToast("Material cadastrado!");
+                }
+                window.cancelEditMaterial();
+            } catch (error) { console.error(error); window.showToast("Erro ao salvar.", true); } 
+            finally { btn.disabled = false; }
         };
 
-        window.deleteInventory = async (id) => {
-            if(confirm("Deseja eliminar este item do estoque?")) {
-                if (isFirebaseActive) await deleteDoc(doc(collection(db, 'inventory'), id));
+        window.removeMaterial = async function(id) {
+            if(!currentUser) return;
+            if(!confirm("Excluir definitivamente este material do estoque?")) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inventory', id));
+                pieceMaterials = pieceMaterials.filter(pm => pm.matId !== id);
+                renderUsedMaterials();
+                window.showToast("Material excluído.");
+                if (editingMaterialId === id) window.cancelEditMaterial();
+            } catch (error) { window.showToast("Erro ao excluir.", true); }
+        };
+
+        // ====== FICHA TÉCNICA E PRODUÇÃO ======
+        function populatePieceMaterialSelect() {
+            const select = document.getElementById('pieceMaterial');
+            select.innerHTML = '<option value="">Selecione um material...</option>';
+            INVENTORY.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = `${m.name} ${m.color ? '('+m.color+')' : ''} - Disp: ${m.originalQty}${m.originalUnit}`;
+                if (m.originalQty <= 0) opt.disabled = true;
+                select.appendChild(opt);
+            });
+        }
+
+        document.getElementById('pieceMaterial').addEventListener('change', function() {
+            const m = INVENTORY.find(x => x.id === this.value);
+            document.getElementById('unitDisplay').textContent = m ? m.unit : '-';
+        });
+
+        window.addMaterialToPiece = function() {
+            const matId = document.getElementById('pieceMaterial').value;
+            const qtyUsedInput = document.getElementById('pieceQtyUsed');
+            const qtyUsed = parseFloat(qtyUsedInput.value);
+
+            if (!matId) return window.showToast("Selecione um material.", true);
+            if (isNaN(qtyUsed) || qtyUsed <= 0) return window.showToast("Quantidade inválida.", true);
+
+            const m = INVENTORY.find(x => x.id === matId);
+            if(!m) return;
+
+            if (qtyUsed > m.qty) {
+                if(!confirm(`Aviso: Tentando lançar ${qtyUsed}${m.unit}, mas o estoque é ${m.qty}${m.unit}. Continuar?`)) return;
+            }
+
+            const cost = m.unitPrice * qtyUsed;
+            const existingIdx = pieceMaterials.findIndex(pm => pm.matId === matId);
+            if(existingIdx > -1) {
+                pieceMaterials[existingIdx].qtyUsed += qtyUsed;
+                pieceMaterials[existingIdx].cost += cost;
+            } else {
+                pieceMaterials.push({ id: Date.now().toString(), matId: m.id, name: `${m.name} ${m.color ? '('+m.color+')' : ''}`, qtyUsed, unit: m.unit, cost });
+            }
+            
+            renderUsedMaterials();
+            document.getElementById('pieceMaterial').value = '';
+            qtyUsedInput.value = '';
+            document.getElementById('unitDisplay').textContent = '-';
+            document.getElementById('production-result').style.display = 'none';
+        };
+
+        window.removePieceMaterial = function(id) {
+            pieceMaterials = pieceMaterials.filter(pm => pm.id !== id);
+            renderUsedMaterials();
+            document.getElementById('production-result').style.display = 'none';
+        };
+
+        function renderUsedMaterials() {
+            const list = document.getElementById('usedMaterialsList');
+            if(pieceMaterials.length === 0) { list.innerHTML = '<li class="text-stone-400 italic text-center py-4">Nenhum material lançado.</li>'; return; }
+            list.innerHTML = '';
+            pieceMaterials.forEach(pm => {
+                list.innerHTML += `
+                    <li class="flex items-center justify-between bg-white p-3 rounded-lg border border-stone-200">
+                        <div>
+                            <p class="font-bold text-stone-900 text-sm">${pm.name}</p>
+                            <p class="text-xs text-stone-500">Gasto: ${pm.qtyUsed}${pm.unit} | Custo: R$ ${pm.cost.toFixed(2)}</p>
+                        </div>
+                        <button onclick="window.removePieceMaterial('${pm.id}')" class="text-stone-400 hover:text-red-500 p-2"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </li>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function recalculatePieceCosts() {
+            pieceMaterials.forEach(pm => {
+                const m = INVENTORY.find(x => x.id === pm.matId);
+                if (m) pm.cost = m.unitPrice * pm.qtyUsed;
+            });
+            renderUsedMaterials();
+        }
+
+        window.calculatePiecePrice = function() {
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+            const profitMargin = parseFloat(document.getElementById('profitMargin').value);
+            const hours = parseFloat(document.getElementById('pieceHours').value);
+
+            if (isNaN(hourlyRate) || hourlyRate <= 0) return window.showToast("Valor da hora inválido.", true);
+            if (isNaN(profitMargin) || profitMargin < 0 || profitMargin >= 100) return window.showToast("Margem inválida.", true);
+            if (pieceMaterials.length === 0) return window.showToast("Adicione materiais à peça.", true);
+            if (isNaN(hours) || hours <= 0) return window.showToast("Tempo de confecção inválido.", true);
+
+            const matCost = pieceMaterials.reduce((sum, item) => sum + item.cost, 0);
+            const labCost = hourlyRate * hours;
+            const totalCost = matCost + labCost;
+            const finalPrice = totalCost / (1 - (profitMargin / 100)); 
+
+            document.getElementById('resMaterials').innerText = matCost.toFixed(2).replace('.', ',');
+            document.getElementById('resLabor').innerText = labCost.toFixed(2).replace('.', ',');
+            document.getElementById('resTotalCost').innerText = totalCost.toFixed(2).replace('.', ',');
+            document.getElementById('resFinalPrice').innerText = finalPrice.toFixed(2).replace('.', ',');
+            
+            const resBox = document.getElementById('production-result');
+            resBox.classList.remove('hidden');
+            resBox.style.display = 'flex';
+        };
+
+        window.finalizePieceAndDeductStock = async function() {
+            if (!currentUser) return window.showToast("Erro de conexão com o banco.", true);
+            if (pieceMaterials.length === 0) return;
+            if (!confirm("Esta ação descontará os materiais da ficha técnica do Estoque Mestre. Confirmar produção?")) return;
+
+            const btn = document.getElementById('btnFinalizePiece');
+            btn.disabled = true; btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processando...`; lucide.createIcons();
+
+            try {
+                for (const pm of pieceMaterials) {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'inventory', pm.matId);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const matData = docSnap.data();
+                        const newQty = matData.qty - pm.qtyUsed;
+                        let newOriginalQty = newQty;
+                        if (matData.originalUnit === 'kg' && matData.unit === 'g') newOriginalQty = newQty / 1000;
+                        else if (matData.originalUnit === matData.unit) newOriginalQty = newQty;
+
+                        await updateDoc(docRef, { qty: newQty, originalQty: newOriginalQty, updatedAt: Date.now() });
+                    }
+                }
+                window.showToast("Peça finalizada! Estoque atualizado.");
+                pieceMaterials = []; renderUsedMaterials();
+                document.getElementById('pieceHours').value = '';
+                document.getElementById('production-result').style.display = 'none';
+            } catch (error) { console.error(error); window.showToast("Erro ao atualizar o estoque.", true); } 
+            finally { 
+                btn.disabled = false; 
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Finalizar e Baixar Estoque`; 
+                lucide.createIcons(); 
             }
         };
-
-        // Calculadora
-        window.calculatePrice = () => {
-            const mat = parseFloat(document.getElementById('calc-material').value) || 0; const hrs = parseFloat(document.getElementById('calc-hours').value) || 0;
-            const rate = parseFloat(document.getElementById('calc-hour-rate').value) || 0; const fees = parseFloat(document.getElementById('calc-fees').value) || 0;
-            const prof = parseFloat(document.getElementById('calc-profit').value) || 0;
-            const lab = hrs * rate; const cost = mat + lab + fees; const profVal = cost * (prof / 100); const tot = cost + profVal;
-            document.getElementById('calc-res-labor').innerText = `R$ ${formatPrice(lab)}`; document.getElementById('calc-res-cost').innerText = `R$ ${formatPrice(cost)}`;
-            document.getElementById('calc-res-profit').innerText = `R$ ${formatPrice(profVal)}`; document.getElementById('calc-res-total').innerText = `R$ ${formatPrice(tot)}`;
-        };
-        window.resetCalculator = () => { ['calc-material','calc-hours','calc-fees'].forEach(id => document.getElementById(id).value = 0); document.getElementById('calc-hour-rate').value = 15; document.getElementById('calc-profit').value = 30; window.calculatePrice(); };
 
         initApp();
     </script>
