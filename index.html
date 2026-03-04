@@ -269,7 +269,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome do Material *</label>
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Nome do Material / Fio *</label>
                             <input type="text" id="matName" required placeholder="Ex: Fio Náutico 3mm, Zíper Invisível" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
                         </div>
                         <div>
@@ -278,26 +278,36 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">SKU / Código</label>
                             <input type="text" id="matSku" placeholder="Ex: FMP-001" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cor (Nome ou HEX)</label>
-                            <input type="text" id="matColor" placeholder="Ex: Azul Marinho ou #000080" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                        <div class="col-span-2">
+                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cor Específica (Nome e Tom visual)</label>
+                            <div class="flex gap-2 h-[46px]">
+                                <input type="text" id="matColorName" placeholder="Nome da Cor (Ex: Azul Marinho)" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <input type="color" id="matColorHex" value="#D4AF37" class="h-full w-16 rounded-xl cursor-pointer border-0 p-0 bg-transparent" title="Selecione o tom visual para o catálogo">
+                            </div>
                         </div>
                     </div>
 
                     <div class="p-6 bg-brand-gold/5 border border-brand-gold/20 rounded-2xl space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-[10px] font-bold text-stone-800 uppercase tracking-widest mb-2">Qtd de Embalagens Compradas *</label>
-                                <input type="number" id="matPackQty" required min="0" step="0.01" placeholder="Quantos rolos/pacotes comprou?" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <label class="block text-[10px] font-bold text-stone-800 uppercase tracking-widest mb-2">Qtd de Embalagens *</label>
+                                <input type="number" id="matPackQty" required min="0" step="0.01" placeholder="Ex: 2 (rolos)" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-stone-800 uppercase tracking-widest mb-2">Valor Total Pago (R$) *</label>
                                 <input type="number" id="matPrice" required min="0" step="0.01" placeholder="0.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-stone-800 uppercase tracking-widest mb-2">Tipo *</label>
+                                <select id="matType" required class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                    <option value="Linha">Linha / Fio (Aparecerá nas cores da bolsa)</option>
+                                    <option value="Acessório">Ferragem / Zíper / Outros</option>
+                                </select>
                             </div>
                         </div>
 
@@ -316,7 +326,7 @@
                                 </select>
                             </div>
                         </div>
-                        <p class="text-[10px] text-stone-500 italic">Exemplo Fio: Comprei 2 rolos, paguei R$ 60,00 no total. Cada rolo vem com 400g. O sistema calculará 800g em estoque e o custo por grama.<br/>Exemplo Zíper: Comprei 1 pacote, paguei R$ 15,00. O pacote vem com 10 unidades.</p>
+                        <p class="text-[10px] text-stone-500 italic">Exemplo Fio: Comprei 2 rolos, paguei R$ 60,00 no total. Cada rolo vem com 400g. O sistema calculará 800g em estoque e o custo por grama.</p>
                     </div>
 
                     <div class="pt-4 flex gap-4">
@@ -442,7 +452,7 @@
     </main>
 
     <!-- MODAL PRODUTO (CATÁLOGO) -->
-    <div id="product-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-6">
+    <div id="product-modal" class="fixed inset-0 z-[70] bg-stone-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 md:p-6">
         <div class="bg-white rounded-[2rem] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
             <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-stone-100 px-8 py-6 flex items-center justify-between z-10">
                 <h3 class="text-2xl font-serif font-bold text-stone-900" id="modal-title">Adicionar Peça ao Catálogo</h3>
@@ -470,7 +480,7 @@
 
                     <div>
                         <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Descrição</label>
-                        <textarea id="admin-prod-desc" required rows="3" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                        <textarea id="admin-prod-desc" required rows="2" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
                     </div>
 
                     <div>
@@ -478,16 +488,29 @@
                         <textarea id="admin-prod-images" required rows="2" placeholder="https://i.imgur.com/foto1.jpg" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-stone-50 rounded-2xl border border-stone-100">
-                        <div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-1 md:col-span-2">
                             <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Tamanhos e Preços</label>
-                            <textarea id="admin-prod-sizes" required rows="3" placeholder="Único|50.00, M|65.00" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
+                            <textarea id="admin-prod-sizes" required rows="3" placeholder="Único|50.00, M|65.00" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
                             <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|Preço</strong></p>
                         </div>
+                    </div>
+
+                    <!-- Ficha Técnica: Seleção Dinâmica de Cores Baseadas no Estoque -->
+                    <div class="col-span-1 md:col-span-2 p-6 bg-brand-gold/5 border border-brand-gold/20 rounded-2xl space-y-4">
                         <div>
-                            <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Cores Disponíveis</label>
-                            <textarea id="admin-prod-colors" required rows="3" placeholder="Azul|#1D3557" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none resize-none"></textarea>
-                            <p class="text-[10px] text-stone-400 mt-2">Formato: <strong>Nome|#HEX</strong></p>
+                            <label class="block text-[10px] font-bold text-stone-900 uppercase tracking-widest mb-2">Modelo de Fio Base da Peça</label>
+                            <select id="admin-prod-base-thread" onchange="window.updateProductColorOptions()" class="w-full bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold/50 outline-none">
+                                <option value="">Selecione o modelo do fio principal...</option>
+                                <!-- Preenchido dinamicamente com os nomes únicos dos fios no estoque -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-stone-900 uppercase tracking-widest mb-2">Cores Disponíveis para Fabricação (Estoque)</label>
+                            <div id="admin-prod-color-checkboxes" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                                <p class="text-xs text-stone-400 italic col-span-2 md:col-span-3">Selecione um modelo de fio primeiro para carregar as cores.</p>
+                            </div>
+                            <p class="text-[10px] text-stone-500 mt-3 italic">Marque as cores de fio disponíveis no seu estoque que poderão ser usadas pelos clientes ao pedir esta bolsa.</p>
                         </div>
                     </div>
 
@@ -577,7 +600,6 @@
                 
                 try {
                     auth = getAuth(app);
-                    // Faz o login anônimo direto no projeto da Trama d'Oro, sem utilizar tokens de ambiente
                     await signInAnonymously(auth);
                     
                     onAuthStateChanged(auth, (user) => {
@@ -588,7 +610,6 @@
                         }
                     });
                 } catch (authErr) {
-                    console.warn("Autenticação não ativada. Prosseguindo leitura do banco com regras abertas...", authErr);
                     currentUser = { uid: 'anonymous' };
                     if(!dataListening) {
                         dataListening = true;
@@ -596,7 +617,6 @@
                     }
                 }
             } catch(e) {
-                console.error("Erro na conexão principal do Firebase", e);
                 PRODUCTS = [...DEFAULT_PRODUCTS];
                 finishLoading();
             }
@@ -629,6 +649,11 @@
                 if(isAdminAuthed) {
                     renderAdminInventory();
                     populatePieceMaterialSelect();
+                    // Atualizar opções de cores no modal de produto se estiver aberto
+                    if (!document.getElementById('product-modal').classList.contains('hidden')) {
+                         const currentSelectedIds = Array.from(document.querySelectorAll('.prod-color-checkbox:checked')).map(cb => cb.value);
+                         window.updateProductColorOptions(currentSelectedIds);
+                    }
                     if(pieceMaterials.length > 0 && document.getElementById('production-result').style.display === 'flex') {
                         recalculatePieceCosts();
                     }
@@ -793,18 +818,67 @@
             document.getElementById('admin-product-form').reset();
             document.getElementById('admin-prod-id').value = '';
             const title = document.getElementById('modal-title');
+            
+            // Popula os modelos de fios disponíveis (nomes únicos onde tipo = Linha)
+            const threadNames = [...new Set(INVENTORY.filter(i => i.type === 'Linha').map(i => i.name))];
+            const baseThreadSelect = document.getElementById('admin-prod-base-thread');
+            baseThreadSelect.innerHTML = '<option value="">Nenhum / Não aplicável</option>';
+            threadNames.forEach(name => {
+                baseThreadSelect.innerHTML += `<option value="${name}">${name}</option>`;
+            });
 
             if (id) {
-                title.innerText = "Editar Peça"; const p = PRODUCTS.find(x => x.id === id);
+                title.innerText = "Editar Peça"; 
+                const p = PRODUCTS.find(x => x.id === id);
                 if(p) {
-                    document.getElementById('admin-prod-id').value = p.id; document.getElementById('admin-prod-name').value = p.name;
-                    document.getElementById('admin-prod-category').value = p.category; document.getElementById('admin-prod-desc').value = p.description;
+                    document.getElementById('admin-prod-id').value = p.id; 
+                    document.getElementById('admin-prod-name').value = p.name;
+                    document.getElementById('admin-prod-category').value = p.category; 
+                    document.getElementById('admin-prod-desc').value = p.description;
                     if(p.images) document.getElementById('admin-prod-images').value = p.images.join(', ');
                     if(p.sizes) document.getElementById('admin-prod-sizes').value = p.sizes.map(s => `${s.label}|${s.price}`).join(', ');
-                    if(p.colors) document.getElementById('admin-prod-colors').value = p.colors.map(c => `${c.name}|${c.hex}`).join(', ');
+                    
+                    // Preenche o fio base e as cores salvas
+                    baseThreadSelect.value = p.baseThread || "";
+                    window.updateProductColorOptions(p.inventoryColorIds || []);
                 }
-            } else { title.innerText = "Nova Peça"; }
+            } else { 
+                title.innerText = "Nova Peça"; 
+                window.updateProductColorOptions([]);
+            }
             document.getElementById('product-modal').classList.remove('hidden');
+        };
+
+        window.updateProductColorOptions = (selectedIds = []) => {
+            const baseThread = document.getElementById('admin-prod-base-thread').value;
+            const container = document.getElementById('admin-prod-color-checkboxes');
+            container.innerHTML = '';
+
+            if (!baseThread) {
+                container.innerHTML = '<p class="text-xs text-stone-400 italic col-span-2 md:col-span-3">Selecione um modelo de fio primeiro para carregar as cores.</p>';
+                return;
+            }
+
+            const matchingThreads = INVENTORY.filter(i => i.type === 'Linha' && i.name === baseThread);
+            
+            if(matchingThreads.length === 0) {
+                 container.innerHTML = '<p class="text-xs text-stone-400 italic col-span-2 md:col-span-3">Nenhuma cor encontrada no estoque para este fio.</p>';
+                 return;
+            }
+
+            matchingThreads.forEach(thread => {
+                const isChecked = selectedIds.includes(thread.id) ? 'checked' : '';
+                const colorName = thread.colorName || thread.color || 'Sem Nome';
+                const colorHex = thread.colorHex || '#CCCCCC';
+                
+                container.innerHTML += `
+                    <label class="flex items-center gap-3 p-2 bg-stone-50 hover:bg-white rounded-xl border border-stone-200 cursor-pointer hover:border-brand-gold transition-colors">
+                        <input type="checkbox" value="${thread.id}" class="prod-color-checkbox form-checkbox h-4 w-4 text-brand-gold rounded border-stone-300" ${isChecked}>
+                        <div class="w-4 h-4 rounded-full border border-stone-200" style="background-color: ${colorHex}" title="${colorName}"></div>
+                        <span class="text-xs font-bold text-stone-700 truncate w-full" title="${colorName}">${colorName}</span>
+                    </label>
+                `;
+            });
         };
 
         window.closeProductModal = () => document.getElementById('product-modal').classList.add('hidden');
@@ -818,12 +892,32 @@
             try {
                 const id = document.getElementById('admin-prod-id').value || Date.now().toString();
                 const sizes = document.getElementById('admin-prod-sizes').value.split(',').map(s => { const [l, p] = s.split('|'); return (l && p) ? { label: l.trim(), price: parseFloat(p.trim()) } : null; }).filter(Boolean);
-                const colors = document.getElementById('admin-prod-colors').value.split(',').map(c => { const [n, h] = c.split('|'); return (n && h) ? { name: n.trim(), hex: h.trim() } : null; }).filter(Boolean);
                 const images = document.getElementById('admin-prod-images').value.split(',').map(i => i.trim()).filter(Boolean);
                 
+                // Mapeia os fios selecionados para construir as cores da bolsa
+                const baseThread = document.getElementById('admin-prod-base-thread').value;
+                const colorCheckboxes = Array.from(document.querySelectorAll('.prod-color-checkbox:checked'));
+                const inventoryColorIds = colorCheckboxes.map(cb => cb.value);
+                
+                const colors = inventoryColorIds.map(invId => {
+                    const invItem = INVENTORY.find(i => i.id === invId);
+                    return invItem ? { 
+                        name: invItem.colorName || invItem.color || 'Cor Estoque', 
+                        hex: invItem.colorHex || '#CCCCCC',
+                        invId: invItem.id 
+                    } : null;
+                }).filter(Boolean);
+
                 const productData = {
-                    id: id, name: document.getElementById('admin-prod-name').value.trim(), category: document.getElementById('admin-prod-category').value,
-                    description: document.getElementById('admin-prod-desc').value.trim(), images: images, sizes: sizes, colors: colors
+                    id: id, 
+                    name: document.getElementById('admin-prod-name').value.trim(), 
+                    category: document.getElementById('admin-prod-category').value,
+                    description: document.getElementById('admin-prod-desc').value.trim(), 
+                    images: images, 
+                    sizes: sizes, 
+                    colors: colors,
+                    baseThread: baseThread,
+                    inventoryColorIds: inventoryColorIds
                 };
 
                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
@@ -853,7 +947,8 @@
             INVENTORY.forEach(m => {
                 const extras = [];
                 if(m.sku) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">SKU: ${m.sku}</span>`);
-                if(m.color) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">Cor: ${m.color}</span>`);
+                const dispColor = m.colorName || m.color;
+                if(dispColor) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px] flex items-center gap-1"><div class="w-2 h-2 rounded-full border border-stone-300" style="background-color: ${m.colorHex || '#ccc'}"></div> ${dispColor}</span>`);
                 if(m.supplier) extras.push(`<span class="bg-stone-200 px-2 py-0.5 rounded text-[10px]">Forn: ${m.supplier}</span>`);
                 const extrasHtml = extras.length > 0 ? `<div class="flex gap-2 mt-2">${extras.join('')}</div>` : '';
                 const stockAlert = m.originalQty <= 0 ? ' <span class="text-red-500 text-[10px] font-bold uppercase tracking-widest">(Esgotado)</span>' : '';
@@ -881,10 +976,11 @@
             document.getElementById('matName').value = m.name || '';
             document.getElementById('matSupplier').value = m.supplier || '';
             document.getElementById('matSku').value = m.sku || '';
-            document.getElementById('matColor').value = m.color || '';
+            document.getElementById('matColorName').value = m.colorName || m.color || '';
+            document.getElementById('matColorHex').value = m.colorHex || '#D4AF37';
             document.getElementById('matPrice').value = m.price || '';
+            document.getElementById('matType').value = m.type || 'Linha';
             
-            // Novos campos com fallback para itens antigos
             document.getElementById('matPackQty').value = m.packs || 1;
             document.getElementById('matYieldPerPack').value = m.yieldPerPack || m.originalQty || '';
             document.getElementById('matUnit').value = m.originalUnit || 'g';
@@ -917,29 +1013,29 @@
 
             const name = document.getElementById('matName').value.trim();
             const sku = document.getElementById('matSku').value.trim();
-            const color = document.getElementById('matColor').value.trim();
+            const colorName = document.getElementById('matColorName').value.trim();
+            const colorHex = document.getElementById('matColorHex').value;
             const supplier = document.getElementById('matSupplier').value.trim();
             const price = parseFloat(document.getElementById('matPrice').value);
             const packs = parseFloat(document.getElementById('matPackQty').value);
+            const type = document.getElementById('matType').value;
             const yieldPerPack = parseFloat(document.getElementById('matYieldPerPack').value);
             const unit = document.getElementById('matUnit').value;
 
             const btn = document.getElementById('btnSaveMaterial');
             btn.disabled = true;
 
-            // Calcula o total com base nos pacotes x rendimento de cada pacote
             const totalQty = packs * yieldPerPack;
 
             let finalQty = totalQty; 
             let finalUnit = unit;
             if (unit === 'kg') { finalQty = totalQty * 1000; finalUnit = 'g'; }
             
-            // Custo por unidade base (g, m, un)
             const unitPrice = finalQty > 0 ? price / finalQty : 0;
             
             const matData = { 
-                name, sku, color, supplier, price, 
-                packs, yieldPerPack, // Salvo para manter o preenchimento no form na hora de editar
+                name, type, sku, colorName, colorHex, supplier, price, 
+                packs, yieldPerPack, 
                 qty: finalQty, unit: finalUnit, 
                 unitPrice, originalQty: totalQty, originalUnit: unit, updatedAt: Date.now() 
             };
@@ -961,7 +1057,7 @@
 
         window.removeMaterial = async function(id) {
             if(!currentUser) return;
-            if(!confirm("Excluir definitivamente este material do estoque?")) return;
+            if(!confirm("Excluir definitivamente este material do estoque? (Produtos que usam essa cor podem perder a referência visual)")) return;
             try {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'inventory', id));
                 pieceMaterials = pieceMaterials.filter(pm => pm.matId !== id);
@@ -978,7 +1074,8 @@
             INVENTORY.forEach(m => {
                 const opt = document.createElement('option');
                 opt.value = m.id;
-                opt.textContent = `${m.name} ${m.color ? '('+m.color+')' : ''} - Disp: ${m.originalQty}${m.originalUnit}`;
+                const dispColor = m.colorName || m.color;
+                opt.textContent = `${m.name} ${dispColor ? '('+dispColor+')' : ''} - Disp: ${m.originalQty}${m.originalUnit}`;
                 if (m.originalQty <= 0) opt.disabled = true;
                 select.appendChild(opt);
             });
@@ -1010,7 +1107,8 @@
                 pieceMaterials[existingIdx].qtyUsed += qtyUsed;
                 pieceMaterials[existingIdx].cost += cost;
             } else {
-                pieceMaterials.push({ id: Date.now().toString(), matId: m.id, name: `${m.name} ${m.color ? '('+m.color+')' : ''}`, qtyUsed, unit: m.unit, cost });
+                const dispColor = m.colorName || m.color;
+                pieceMaterials.push({ id: Date.now().toString(), matId: m.id, name: `${m.name} ${dispColor ? '('+dispColor+')' : ''}`, qtyUsed, unit: m.unit, cost });
             }
             
             renderUsedMaterials();
